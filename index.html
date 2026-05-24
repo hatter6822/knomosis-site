@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark light">
+  <title>Knomosis</title>
+  <meta name="description" content="Knomosis project website and interactive codebase maps.">
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script src="assets/js/theme-init.js"></script>
+</head>
+<body>
+  <nav class="nav scrolled" id="nav" data-force-scrolled="true" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo" aria-label="Knomosis home">Knomosis</a>
+      <ul class="nav-links" id="nav-links" role="list">
+        <li><a href="#about">About</a></li>
+        <li><a href="#maps">Code Maps</a></li>
+        <li><a href="map.html">Map Viewer</a></li>
+        <li><a href="https://github.com/hatter6822/Knomosis" target="_blank" rel="noopener noreferrer" class="nav-cta">GitHub</a></li>
+      </ul>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <section id="hero" class="hero section">
+      <div class="container">
+        <h1>Knomosis</h1>
+        <p>Formal methods and systems engineering research with browser-native codebase exploration.</p>
+        <a class="btn" href="map.html">Open Codebase Maps</a>
+      </div>
+    </section>
+
+    <section id="about" class="section section-alt">
+      <div class="container">
+        <h2>About</h2>
+        <p>This site is a dependency-minimal vanilla JavaScript boilerplate inspired by the seLe4n project website architecture.</p>
+      </div>
+    </section>
+
+    <section id="maps" class="section">
+      <div class="container">
+        <h2>Available Maps</h2>
+        <ul>
+          <li>Lean codemap</li>
+          <li>Rust codemap</li>
+          <li>Solidity codemap</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer footer-compact">
+    <div class="container">
+      <p>Knomosis · <a href="map.html">Code Maps</a> · <a href="https://github.com/hatter6822/Knomosis" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+    </div>
+  </footer>
+
+  <script src="assets/js/header-nav.js" defer></script>
+  <script src="assets/js/background-pattern.js" defer></script>
+</body>
+</html>

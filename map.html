@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark light">
+  <title>Knomosis Codebase Maps</title>
+  <meta name="description" content="Adaptive Knomosis codemap flowchart for Lean, Rust, and Solidity.">
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/map.css">
+  <script src="assets/js/theme-init.js"></script>
+</head>
+<body>
+  <nav class="nav scrolled" id="nav" data-force-scrolled="true" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="Knomosis home">Knomosis</a>
+      <ul class="nav-links" id="nav-links" role="list">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="map.html" aria-current="page">Code Maps</a></li>
+        <li><a href="https://github.com/hatter6822/Knomosis" target="_blank" rel="noopener noreferrer" class="nav-cta">GitHub</a></li>
+      </ul>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main id="main-content" class="code-map-page">
+    <header class="section code-map-hero">
+      <div class="container code-map-hero-shell">
+        <h1>Knomosis Adaptive Codebase Navigator</h1>
+        <p>Flowchart-style codemap viewer inspired by seLe4n with selectable language-specific codebases.</p>
+        <p id="map-status" class="map-status" aria-live="polite">Loading…</p>
+        <p id="map-summary" class="results-note" aria-live="polite"></p>
+      </div>
+    </header>
+
+    <section class="section section-alt" aria-label="Map selection and content">
+      <div class="container map-workspace">
+        <article class="card constellation-panel">
+          <form id="map-toolbar" class="map-toolbar" aria-label="Map controls">
+            <div class="control-group control-group-wide">
+              <label for="map-select">Codebase</label>
+              <select id="map-select">
+                <option value="lean">Lean</option>
+                <option value="rust">Rust</option>
+                <option value="solidity">Solidity</option>
+              </select>
+            </div>
+            <div class="control-group control-group-wide">
+              <label for="module-search">Module search</label>
+              <input id="module-search" type="text" placeholder="Search modules" autocomplete="off">
+            </div>
+            <div class="toolbar-actions">
+              <button id="reset-view" class="btn btn-secondary" type="button">Reset View</button>
+            </div>
+          </form>
+          <div id="flowchart-wrap" class="flowchart-wrap" role="region" aria-label="Dependency flowchart" tabindex="0"></div>
+          <section id="module-detail" class="module-detail-panel" aria-live="polite">
+            <p>Select a module node to inspect declarations.</p>
+          </section>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer footer-compact">
+    <div class="container">
+      <p>Knomosis · <a href="index.html">Home</a> · <a href="https://github.com/hatter6822/Knomosis" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+    </div>
+  </footer>
+
+  <script src="assets/js/header-nav.js" defer></script>
+  <script src="assets/js/background-pattern.js" defer></script>
+  <script src="assets/js/map.js" defer></script>
+</body>
+</html>
