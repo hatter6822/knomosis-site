@@ -5,62 +5,104 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark light">
   <title>Knomosis Codebase Maps</title>
-  <meta name="description" content="Adaptive Knomosis codemap flowchart for Lean, Rust, and Solidity.">
+  <meta name="description" content="Adaptive Knomosis codemap navigator: explore Lean, Rust, and Solidity module dependencies and declaration call graphs as an interactive flowchart.">
+  <meta name="theme-color" content="#080c15" id="theme-color-meta">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
   <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/map.css">
   <script src="assets/js/theme-init.js"></script>
 </head>
 <body>
+  <div id="bg-canvas-wrap" aria-hidden="true">
+    <div id="bg-canvas-mover">
+      <canvas id="math-bg-a" class="math-bg-layer"></canvas>
+    </div>
+  </div>
+
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
   <nav class="nav scrolled" id="nav" data-force-scrolled="true" aria-label="Main navigation">
     <div class="nav-inner">
       <a href="index.html" class="nav-logo" aria-label="Knomosis home">Knomosis</a>
       <ul class="nav-links" id="nav-links" role="list">
         <li><a href="index.html#about">About</a></li>
-        <li><a href="map.html" aria-current="page">Code Maps</a></li>
+        <li><a href="index.html#maps">Code Maps</a></li>
+        <li><a href="map.html" aria-current="page">Map Viewer</a></li>
         <li><a href="https://github.com/hatter6822/Knomosis" target="_blank" rel="noopener noreferrer" class="nav-cta">GitHub</a></li>
       </ul>
-      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
-        <span></span><span></span><span></span>
-      </button>
+      <div class="nav-controls">
+        <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links" aria-haspopup="true">
+          <span></span><span></span><span></span>
+        </button>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="theme-toggle bg-animation-toggle" id="bg-animation-toggle" aria-label="Pause background animation" aria-pressed="false" title="Pause background animation">
+          <svg class="icon-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+          <svg class="icon-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+      </div>
     </div>
   </nav>
 
   <main id="main-content" class="code-map-page">
-    <header class="section code-map-hero">
+    <header class="section code-map-hero" id="map-overview">
       <div class="container code-map-hero-shell">
-        <h1>Knomosis Adaptive Codebase Navigator</h1>
-        <p>Flowchart-style codemap viewer inspired by seLe4n with selectable language-specific codebases.</p>
-        <p id="map-status" class="map-status" aria-live="polite">Loading…</p>
-        <p id="map-summary" class="results-note" aria-live="polite"></p>
+        <div class="code-map-hero-main section-lead">
+          <p class="hero-label">Knomosis Architecture Intelligence</p>
+          <h1>Adaptive Codebase Navigator</h1>
+          <p class="section-lead">Explore the Knomosis codebase one module at a time. Each language map renders the same flow graph: cross-module dependencies, dependents, and per-declaration call graphs derived directly from the JSON codemaps.</p>
+        </div>
+        <div class="code-map-header-meta" role="status" aria-live="polite">
+          <p id="map-status" class="map-status">Loading codebase map…</p>
+          <p id="module-results" class="results-note">0 modules shown</p>
+        </div>
+        <div class="map-stats" id="map-stats" aria-live="polite"></div>
       </div>
     </header>
 
-    <section class="section section-alt" aria-label="Map selection and content">
+    <section class="section section-alt" id="module-graph" aria-label="Module graph workspace">
       <div class="container map-workspace">
-        <article class="card constellation-panel">
-          <form id="map-toolbar" class="map-toolbar" aria-label="Map controls">
-            <div class="control-group control-group-wide">
-              <label for="map-select">Codebase</label>
-              <select id="map-select">
-                <option value="lean">Lean</option>
-                <option value="rust">Rust</option>
-                <option value="solidity">Solidity</option>
-              </select>
+        <div class="navigator-layout">
+          <article class="card constellation-panel">
+            <form class="map-toolbar" id="map-toolbar" role="search" aria-label="Module controls" aria-controls="flowchart-wrap">
+              <div class="control-group">
+                <label for="map-select">Codebase</label>
+                <select id="map-select">
+                  <option value="lean">Lean</option>
+                  <option value="rust">Rust</option>
+                  <option value="solidity">Solidity</option>
+                </select>
+              </div>
+              <div class="control-group control-group-wide">
+                <label for="module-search">Context search</label>
+                <input id="module-search" type="text" placeholder="Module or Module.declaration" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="module-search-options" aria-describedby="module-search-feedback">
+                <ul id="module-search-options" class="module-search-options" role="listbox" hidden></ul>
+                <p id="module-search-feedback" class="search-feedback" aria-live="polite"></p>
+              </div>
+              <div class="toolbar-actions">
+                <button id="reset-view" class="btn btn-secondary" type="button">Reset</button>
+              </div>
+            </form>
+            <div id="flow-node-interior-menu" class="flow-node-interior-menu" aria-live="polite"></div>
+            <div class="flowchart-shell">
+              <p class="flowchart-mobile-hint" aria-hidden="true">Tip: on mobile, drag to pan, pinch to zoom, and tap a node to inspect details.</p>
+              <details class="keyboard-shortcuts-hint">
+                <summary>Keyboard shortcuts</summary>
+                <dl class="shortcut-list">
+                  <div><dt><kbd>J</kbd> / <kbd>K</kbd></dt><dd>Navigate modules</dd></div>
+                  <div><dt><kbd>/</kbd></dt><dd>Focus search</dd></div>
+                  <div><dt><kbd>Esc</kbd></dt><dd>Close search</dd></div>
+                </dl>
+              </details>
+              <div id="flowchart-wrap" class="flowchart-wrap" aria-live="polite" role="region" aria-label="Dependency and call flow chart" tabindex="0"></div>
             </div>
-            <div class="control-group control-group-wide">
-              <label for="module-search">Module search</label>
-              <input id="module-search" type="text" placeholder="Search modules" autocomplete="off">
-            </div>
-            <div class="toolbar-actions">
-              <button id="reset-view" class="btn btn-secondary" type="button">Reset View</button>
-            </div>
-          </form>
-          <div id="flowchart-wrap" class="flowchart-wrap" role="region" aria-label="Dependency flowchart" tabindex="0"></div>
-          <section id="module-detail" class="module-detail-panel" aria-live="polite">
-            <p>Select a module node to inspect declarations.</p>
-          </section>
-        </article>
+          </article>
+        </div>
       </div>
     </section>
   </main>
@@ -72,6 +114,7 @@
   </footer>
 
   <script src="assets/js/header-nav.js" defer></script>
+  <script src="assets/js/ui-controls.js" defer></script>
   <script src="assets/js/background-pattern.js" defer></script>
   <script src="assets/js/map.js" defer></script>
 </body>

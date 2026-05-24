@@ -5,12 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark light">
   <title>Knomosis</title>
-  <meta name="description" content="Knomosis project website and interactive codebase maps.">
+  <meta name="description" content="Knomosis project website and interactive codebase maps for the Lean, Rust, and Solidity components.">
+  <meta name="theme-color" content="#080c15" id="theme-color-meta">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
   <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
   <link rel="stylesheet" href="assets/css/style.css">
   <script src="assets/js/theme-init.js"></script>
 </head>
 <body>
+  <div id="bg-canvas-wrap" aria-hidden="true">
+    <div id="bg-canvas-mover">
+      <canvas id="math-bg-a" class="math-bg-layer"></canvas>
+    </div>
+  </div>
+
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
   <nav class="nav scrolled" id="nav" data-force-scrolled="true" aria-label="Main navigation">
     <div class="nav-inner">
       <a href="#hero" class="nav-logo" aria-label="Knomosis home">Knomosis</a>
@@ -20,36 +32,84 @@
         <li><a href="map.html">Map Viewer</a></li>
         <li><a href="https://github.com/hatter6822/Knomosis" target="_blank" rel="noopener noreferrer" class="nav-cta">GitHub</a></li>
       </ul>
-      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
-        <span></span><span></span><span></span>
-      </button>
+      <div class="nav-controls">
+        <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links" aria-haspopup="true">
+          <span></span><span></span><span></span>
+        </button>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="theme-toggle bg-animation-toggle" id="bg-animation-toggle" aria-label="Pause background animation" aria-pressed="false" title="Pause background animation">
+          <svg class="icon-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+          <svg class="icon-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+      </div>
     </div>
   </nav>
 
   <main id="main-content">
-    <section id="hero" class="hero section">
-      <div class="container">
+    <section id="hero" class="hero">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="container hero-content">
+        <p class="hero-label">Formal Methods · Runtime · On-chain</p>
         <h1>Knomosis</h1>
-        <p>Formal methods and systems engineering research with browser-native codebase exploration.</p>
-        <a class="btn" href="map.html">Open Codebase Maps</a>
+        <p class="hero-subtitle">A multi-language system spanning Lean proofs, a Rust runtime, and Solidity contracts — explored through browser-native, dependency-light codebase maps.</p>
+        <p class="hero-tagline">Pick a language, pick a module, and follow the call graph.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="map.html">Open Codebase Maps</a>
+          <a class="btn btn-secondary" href="https://github.com/hatter6822/Knomosis" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+        </div>
       </div>
     </section>
 
     <section id="about" class="section section-alt">
       <div class="container">
-        <h2>About</h2>
-        <p>This site is a dependency-minimal vanilla JavaScript boilerplate inspired by the seLe4n project website architecture.</p>
+        <h2 class="section-title">About</h2>
+        <p class="section-lead">Knomosis brings together three codebases that are usually read with three different toolchains. This site renders each one as the same kind of adaptive flow chart, so the structure of the Lean proofs, the Rust runtime, and the Solidity contracts can all be navigated the same way.</p>
+        <div class="grid grid-3">
+          <article class="card">
+            <h3>One graph, every language</h3>
+            <p>Each map is generated from a JSON codemap of the repository. Modules become nodes; cross-module references become edges. The viewer derives the dependency and call graph directly from the data — nothing is hand-drawn.</p>
+          </article>
+          <article class="card">
+            <h3>Module and declaration views</h3>
+            <p>Start at a module to see what it depends on and what depends on it. Drill into any declaration to see exactly what it calls and what calls it, with edges marking cross-module references.</p>
+          </article>
+          <article class="card">
+            <h3>Dependency-minimized</h3>
+            <p>The whole site is vanilla HTML, CSS, and JavaScript — no frameworks, no build step. It mirrors the architecture of the seLe4n project site it was adapted from.</p>
+          </article>
+        </div>
       </div>
     </section>
 
     <section id="maps" class="section">
       <div class="container">
-        <h2>Available Maps</h2>
-        <ul>
-          <li>Lean codemap</li>
-          <li>Rust codemap</li>
-          <li>Solidity codemap</li>
-        </ul>
+        <h2 class="section-title">Code Maps</h2>
+        <p class="section-lead">Three codemaps are bundled with the site, one per language scope. Open any of them in the adaptive navigator.</p>
+        <div class="grid grid-3">
+          <a class="feature-card" href="map.html?codebase=lean">
+            <h3>Lean</h3>
+            <p>Formal definitions, theorems, and proof structure across the <code>**/*.lean</code> sources.</p>
+            <p class="card-note">266 modules · 4,119 declarations</p>
+          </a>
+          <a class="feature-card" href="map.html?codebase=rust">
+            <h3>Rust</h3>
+            <p>The runtime and benchmarking crates: functions, structs, traits, and modules across <code>**/*.rs</code>.</p>
+            <p class="card-note">115 modules · 3,397 declarations</p>
+          </a>
+          <a class="feature-card" href="map.html?codebase=solidity">
+            <h3>Solidity</h3>
+            <p>On-chain contracts, interfaces, and libraries across the <code>**/*.sol</code> sources.</p>
+            <p class="card-note">52 modules · 1,011 declarations</p>
+          </a>
+        </div>
+        <div class="callout">
+          <h3>How the viewer works</h3>
+          <p>Choose a codebase from the toolbar, then search or click to select a module. The selected module sits in the center lane; the modules it depends on appear on the left and the modules that depend on it appear on the right. The interior menu lists every declaration in the module, grouped by kind. Click a declaration to switch into its call graph, and use the breadcrumb to return.</p>
+          <p>Counts above reflect the bundled snapshot; the viewer always shows live statistics for the selected codebase.</p>
+        </div>
       </div>
     </section>
   </main>
@@ -61,6 +121,7 @@
   </footer>
 
   <script src="assets/js/header-nav.js" defer></script>
+  <script src="assets/js/ui-controls.js" defer></script>
   <script src="assets/js/background-pattern.js" defer></script>
 </body>
 </html>
