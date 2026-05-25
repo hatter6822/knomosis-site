@@ -38,11 +38,17 @@ The site uses a **neumorphic** ("soft UI") theme in both light and dark modes:
 surfaces share the background colour and are shaped by paired soft shadows
 (light top-left, dark bottom-right) rather than borders, over a flat, uniform
 background. The palette is built from five pastel anchors — `#8ECC81`,
-`#81CC9A`, `#81CCC0`, `#C081CC`, `#CC818E` — used as decorative fills and
-accents, with darkened variants carrying text so contrast stays WCAG-AA. All
-theme values live in CSS custom properties (`assets/css/style.css`); the flow
-chart reads its lane and node-shadow colours from those variables so it stays
-in sync when the theme changes.
+`#81CC9A`, `#81CCC0`, `#C081CC`, `#CC818E` — used as **decorative** fills,
+borders and accents only; **text always uses darkened variants** so every
+text/background pair clears WCAG AA (verified by tests). All theme values live
+in CSS custom properties (`assets/css/style.css`); the flow chart reads its
+lane and node-shadow colours from those variables so it stays in sync when the
+theme changes.
+
+Because the depth is shadow-based, the theme also restores real borders under
+`forced-colors`/High-Contrast mode and in print, and the per-node shadow filter
+is dropped automatically on dense hub graphs (60+ neighbours) to keep rendering
+cheap.
 
 Deep links are supported, e.g. `map.html?codebase=rust` or
 `map.html?codebase=lean&module=LegalKernel` or
@@ -99,4 +105,8 @@ npm test             # node --test
 `map.js` only boots in a browser (it checks for `window`/`document`) and exposes
 its internals via `module.exports` under Node, so the tests run no DOM code. The
 suite also validates that the bundled codemaps are internally consistent
-(summary counts, edge symmetry, and declaration call-graph invariants).
+(summary counts, edge symmetry, and declaration call-graph invariants), and
+`test/theme.test.js` parses the real theme variables from `style.css` and
+asserts every text / link / lane colour clears WCAG AA against both the page
+background and the raised node surface, in both themes — so a future palette
+change cannot silently regress accessibility.

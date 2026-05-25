@@ -28,7 +28,7 @@
   --surface-2:   #2c352f;
   --border:      rgba(150, 184, 164, 0.12);
   --text:        #c6d1ca;
-  --text-muted:  #8b988f;
+  --text-muted:  #9caaa0;
   --text-bright: #e9f0eb;
   --heading:     #f1f6f2;
   --accent:      #81ccc0;
@@ -1835,6 +1835,23 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
+/* Forced-colors / High-Contrast mode strips box-shadows, which is how this
+   neumorphic theme conveys structure — restore real borders so surfaces and
+   controls stay delineated. */
+@media (forced-colors: active) {
+  .nav.scrolled,
+  .card,
+  .feature-card,
+  .callout,
+  .btn,
+  .theme-toggle,
+  .nav-toggle,
+  pre,
+  code {
+    border: 1px solid;
+  }
+}
+
 /* Selection */
 ::selection {
   background: rgba(129, 204, 192, 0.3);
@@ -1885,9 +1902,13 @@ a.tier-script:hover {
   }
   a { color: var(--print-fg, #222); }
   code { background: var(--print-surface, #f5f5f5); color: var(--print-muted, #333); }
-  pre { border-color: var(--print-border, #ccc); background: #f9f9f9; }
-  .card, .feature-card, .tier, .threat-card, .quality-card {
-    border-color: var(--print-border, #ccc);
+  pre { border: 1px solid var(--print-border, #ccc); box-shadow: none; background: #f9f9f9; }
+  /* Neumorphic depth is shadow-based and shadows don't print, so restore real
+     borders for paper so panels stay delineated. */
+  .card, .feature-card, .callout, .tier, .threat-card, .quality-card,
+  .stat-card, .code-map-hero-shell {
+    border: 1px solid var(--print-border, #ccc);
+    box-shadow: none;
     background: var(--print-bg, #fff);
   }
   .comparison-table, .data-table {

@@ -40,6 +40,10 @@
   var DEFAULT_REPO_URL = "https://github.com/hatter6822/Knomosis";
   var DEFAULT_REF = "main";
   var NEIGHBOR_LIMIT = 10;
+  /* Above this many nodes the per-node neumorphic shadow filter is dropped to
+     keep rendering cheap (a hub module can have 100+ neighbours in expanded
+     mode). The recessed canvas + coloured strokes still convey depth. */
+  var FLOW_SHADOW_MAX_NODES = 60;
 
   /* Edge / lane colours — shared with the legend and lane labels. These hold
      the dark-theme defaults and are refreshed from the per-theme CSS
@@ -1174,6 +1178,7 @@
 
     var ariaLabel = "Flow chart for " + selected + ": depends on " + allImports.length + " module" + (allImports.length === 1 ? "" : "s") + ", used by " + allImporters.length + " module" + (allImporters.length === 1 ? "" : "s");
     var flowSvg = createFlowSvg(flowWidth, flowHeight, ariaLabel);
+    if (imports.length + importers.length + 1 > FLOW_SHADOW_MAX_NODES) flowSvg.svg.classList.add("flow-dense");
     var edgeLayer = flowSvg.edgeLayer, nodeLayer = flowSvg.nodeLayer, labelLayer = flowSvg.labelLayer;
 
     function createNode(name, x, y, w, h, color, subtitle, tooltip, active, isStatic, onActivate, metaLink) {
@@ -1389,6 +1394,7 @@
     wrap.appendChild(createFlowLegend(declarationFlowLegendItems(), "Declaration flow chart legend"));
 
     var flowSvg = createFlowSvg(flowWidth, flowHeight, "Declaration flow chart for " + declName + ", calls " + calls.length + ", called by " + calledBy.length);
+    if (visibleCalls.length + visibleCallers.length + 1 > FLOW_SHADOW_MAX_NODES) flowSvg.svg.classList.add("flow-dense");
     var edgeLayer = flowSvg.edgeLayer, nodeLayer = flowSvg.nodeLayer, labelLayer = flowSvg.labelLayer;
 
     function createDeclNode(name, x, y, w, h, color, subtitle, tooltip, active, onActivate, metaLink) {

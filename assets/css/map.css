@@ -332,7 +332,7 @@
   border-left: 3px solid var(--interior-kind-color, var(--border));
   border-radius: 0.5rem;
   min-height: 1.7rem;
-  background: color-mix(in oklab, var(--interior-kind-color, var(--surface)) 12%, var(--surface) 88%);
+  background: color-mix(in oklab, var(--interior-kind-color, var(--surface)) 9%, var(--surface) 91%);
   box-shadow: var(--neu-flat);
   max-width: 100%;
   overflow-wrap: anywhere;
@@ -342,7 +342,7 @@
   flex-wrap: wrap;
 }
 .interior-menu-item:hover {
-  background: color-mix(in oklab, var(--interior-kind-color, var(--surface)) 22%, var(--surface) 78%);
+  background: color-mix(in oklab, var(--interior-kind-color, var(--surface)) 16%, var(--surface) 84%);
   box-shadow: var(--neu-raised-sm);
 }
 .interior-menu-item-active {
@@ -354,8 +354,8 @@
 .interior-menu-item::after {
   content: attr(data-kind-label);
   font-family: var(--font-mono);
-  font-size: 0.56rem;
-  color: color-mix(in oklab, var(--interior-kind-color, var(--text-muted)) 72%, var(--text-muted));
+  font-size: 0.58rem;
+  color: var(--text);
   margin-left: auto;
   padding-left: 0.33rem;
   letter-spacing: 0.01em;
@@ -408,6 +408,11 @@
   filter: url(#flow-node-shadow);
   transition: stroke 0.15s ease-out, stroke-width 0.15s ease-out, fill 0.15s ease-out;
 }
+/* Dense graphs (hub modules with 60+ neighbours) drop the per-node shadow
+   filter so initial render stays cheap; the recessed canvas still conveys depth. */
+.flowchart-svg.flow-dense .flow-node rect { filter: none; }
+.flowchart-svg.flow-dense .flow-node:not(.static):hover rect,
+.flowchart-svg.flow-dense .flow-node:not(.static):focus-visible rect { filter: brightness(1.05); }
 /* Promote active node to its own compositing layer during interaction
    so hover/focus filter changes don't repaint the entire SVG. */
 .flow-node:not(.static):hover,
@@ -675,6 +680,17 @@
   gap: 0.35rem;
   cursor: pointer;
 }
+/* Declaration name links/buttons inside a chip. Text always uses readable
+   --text/--accent — the kind colour is decorative (left bar, chip tint, and
+   underline only), since the soft pastels would fail text contrast on the
+   light surface. */
+.interior-menu-item > a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--interior-kind-color, var(--text-muted));
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
 .interior-menu-item-btn {
   all: unset;
   cursor: pointer;
@@ -687,8 +703,9 @@
   overflow-wrap: anywhere;
 }
 .interior-menu-item-btn:hover,
-.interior-menu-item-btn:focus-visible {
-  color: var(--interior-kind-color, var(--accent));
+.interior-menu-item-btn:focus-visible,
+.interior-menu-item > a:hover {
+  color: var(--accent);
   text-decoration-thickness: 2px;
 }
 .interior-menu-item-btn:focus-visible {
@@ -821,3 +838,25 @@
 /* Theme-specific surfaces are handled entirely by the per-theme --surface /
    --bg / --shadow-* tokens, so the neumorphic components need no light-theme
    overrides here. */
+
+/* Forced-colors / High-Contrast mode: restore borders the shadow-based
+   neumorphism relies on so the viewer's surfaces and controls stay delineated. */
+@media (forced-colors: active) {
+  .code-map-hero-shell,
+  .stat-card,
+  .control-group input,
+  .control-group select,
+  .module-search-options,
+  .flow-node-interior-menu,
+  .interior-menu-column,
+  .interior-kind-select,
+  .interior-menu-item,
+  .interior-menu-search,
+  .legend-item,
+  .flowchart-wrap,
+  .shortcut-list,
+  .shortcut-list kbd,
+  .declaration-breadcrumb-module {
+    border: 1px solid;
+  }
+}
