@@ -3,7 +3,7 @@
 
   var theme = null;
   try {
-    theme = localStorage.getItem("sele4n-theme");
+    theme = localStorage.getItem("knomosis-theme");
   } catch (e) {}
 
   if (theme === "light" || theme === "dark") {

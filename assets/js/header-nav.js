@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var NAV_INTENT_KEY = "sele4n-nav-intent-v1";
+  var NAV_INTENT_KEY = "knomosis-nav-intent-v1";
   var NAV_INTENT_MAX_AGE_MS = 60 * 1000;
 
   function normalizePagePath(pathname, options) {
