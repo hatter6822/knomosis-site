@@ -10,94 +10,137 @@
   padding: 0;
 }
 
+/* ============================================================
+   Neumorphic theme — palette anchors (decorative):
+     #8ECC81 green · #81CC9A mint · #81CCC0 teal
+     #C081CC purple · #CC818E rose
+   Surfaces share the background colour and are shaped by paired
+   soft shadows (light top-left + dark bottom-right). Pastels are
+   used for fills/accents; darkened "ink" variants carry text so
+   contrast stays accessible.
+   :root holds the DARK theme; [data-theme="light"] the light one.
+   ============================================================ */
 :root {
-  /* Colors */
-  --bg:          #080c15;
-  --bg-alt:      #0d1320;
-  --surface:     #141c2d;
-  --surface-2:   #192338;
-  --border:      #2a3550;
-  --text:        #d8deea;
-  --text-muted:  #99a4bf;
-  --text-bright: #e8ecf4;
-  --heading:     #f0f2f8;
-  --accent:      #5ba0f5;
-  --accent-dim:  #3d7dd4;
-  --accent-glow: rgba(91, 160, 245, 0.15);
-  --on-accent:   #fff;
-  --green:       #4ec989;
-  --green-dim:   rgba(78, 201, 137, 0.12);
-  --yellow:      #e5c07b;
-  --yellow-dim:  rgba(229, 192, 123, 0.12);
-  --red:         #e06c75;
-  --red-dim:     rgba(224, 108, 117, 0.12);
-  --purple:      #c678dd;
-  --purple-dim:  rgba(198, 120, 221, 0.12);
-  --bg-pattern:
-    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(91, 160, 245, 0.11), transparent 72%),
-    radial-gradient(ellipse 60% 40% at 30% 72%, rgba(78, 201, 137, 0.08), transparent 65%),
-    linear-gradient(180deg, rgba(8, 12, 21, 0.55), rgba(8, 12, 21, 0.3));
+  /* Colors — dark neumorphic plane (desaturated green-grey) */
+  --bg:          #262d29;
+  --bg-alt:      #222823;
+  --surface:     #262d29;
+  --surface-2:   #2c352f;
+  --border:      rgba(150, 184, 164, 0.12);
+  --text:        #c6d1ca;
+  --text-muted:  #8b988f;
+  --text-bright: #e9f0eb;
+  --heading:     #f1f6f2;
+  --accent:      #81ccc0;
+  --accent-dim:  #62b3a6;
+  --accent-glow: rgba(129, 204, 192, 0.16);
+  --on-accent:   #15201c;
+  --green:       #8ecc81;
+  --green-dim:   rgba(142, 204, 129, 0.14);
+  --yellow:      #d8bd72;
+  --yellow-dim:  rgba(216, 189, 114, 0.12);
+  --red:         #cc818e;
+  --red-dim:     rgba(204, 129, 142, 0.14);
+  --purple:      #c081cc;
+  --purple-dim:  rgba(192, 129, 204, 0.14);
 
-  /* Assurance colors (map proof-pair indicators) */
-  --assurance-linked:  #22b573;
-  --assurance-partial: #c47adb;
-  --assurance-local:   #5ba8d4;
-  --assurance-none:    #8e8e9a;
+  /* Neumorphic shadow seed colours (per theme) */
+  --shadow-dark:  #191e1b;
+  --shadow-light: #323b35;
+  /* Flood colours for the SVG flow-node soft shadow (read by map.js) */
+  --flow-shadow-dark:  rgba(0, 0, 0, 0.55);
+  --flow-shadow-light: rgba(72, 86, 78, 0.55);
+
+  /* Flow-chart lane/edge colours (read by map.js at render time). Light
+     pastels read well on the dark canvas. */
+  --flow-selected: #81ccc0;
+  --flow-depends:  #8ecc81;
+  --flow-usedby:   #c081cc;
+  --flow-calls:    #81cc9a;
+  --flow-neutral:  #9aa8a0;
+
+  /* Flat, uniform background — neumorphism depends on an even surface */
+  --bg-pattern: var(--bg);
+
+  /* Assurance colours (legacy map tokens; unused but kept defined) */
+  --assurance-linked:  #8ecc81;
+  --assurance-partial: #c081cc;
+  --assurance-local:   #81ccc0;
+  --assurance-none:    #8b988f;
 
   /* Typography */
   --font-sans:  -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono:  "SFMono-Regular", "Cascadia Code", "Fira Code", Consolas, "Liberation Mono", Menlo, monospace;
 
-  /* Layout */
-  --section-bg:     rgba(8, 12, 21, 0.94);
-  --section-alt-bg: rgba(13, 19, 32, 0.95);
-  --footer-bg:      rgba(13, 19, 32, 0.96);
+  /* Layout — flat sections on the shared plane */
+  --section-bg:     var(--bg);
+  --section-alt-bg: var(--bg-alt);
+  --footer-bg:      var(--bg-alt);
 
-  /* Spacing */
+  /* Spacing & shape — generous radii read as soft, moulded forms */
   --section-pad: 5rem 0;
   --container-w: 72rem;
-  --radius:      0.5rem;
-  --radius-lg:   0.75rem;
+  --radius:      0.75rem;
+  --radius-lg:   1.1rem;
   --nav-height: 3.75rem;
   --nav-scroll-offset: 4.5rem;
+
+  /* Neumorphic shadow tokens — resolve lazily against the per-theme
+     --shadow-* seeds, so a single definition serves both themes. */
+  --neu-raised:    6px 6px 14px var(--shadow-dark), -6px -6px 14px var(--shadow-light);
+  --neu-raised-sm: 4px 4px 9px var(--shadow-dark),  -4px -4px 9px var(--shadow-light);
+  --neu-flat:      2px 2px 6px var(--shadow-dark),  -2px -2px 6px var(--shadow-light);
+  --neu-inset:     inset 4px 4px 9px var(--shadow-dark), inset -4px -4px 9px var(--shadow-light);
+  --neu-inset-sm:  inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
 }
 
-/* --- Light Theme --- */
+/* --- Light Theme (the canonical neumorphic surface) --- */
 [data-theme="light"] {
-  --bg:          #f8f9fc;
-  --bg-alt:      #f0f2f7;
-  --surface:     #ffffff;
-  --surface-2:   #eef0f5;
-  --border:      #d4d8e1;
-  --text:        #3a3f4b;
-  --text-muted:  #6b7280;
-  --text-bright: #1a1d24;
-  --heading:     #111318;
-  --accent:      #2b6fd0;
-  --accent-dim:  #1a5bb8;
-  --accent-glow: rgba(43, 111, 208, 0.1);
-  --on-accent:   #fff;
-  --green:       #16804b;
-  --green-dim:   rgba(22, 128, 75, 0.08);
-  --yellow:      #946b1a;
-  --yellow-dim:  rgba(148, 107, 26, 0.08);
-  --red:         #c53030;
-  --red-dim:     rgba(197, 48, 48, 0.08);
-  --purple:      #7c3aed;
-  --purple-dim:  rgba(124, 58, 237, 0.08);
-  --bg-pattern:
-    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(43, 111, 208, 0.14), transparent 72%),
-    radial-gradient(ellipse 60% 40% at 30% 72%, rgba(22, 128, 75, 0.1), transparent 65%),
-    linear-gradient(180deg, rgba(248, 249, 252, 0.2), rgba(240, 242, 247, 0.15));
+  --bg:          #e6ece8;
+  --bg-alt:      #e1e8e3;
+  --surface:     #e6ece8;
+  --surface-2:   #edf2ef;
+  --border:      rgba(120, 150, 132, 0.22);
+  --text:        #45514a;
+  --text-muted:  #5d6a62;
+  --text-bright: #2b342e;
+  --heading:     #222a25;
+  --accent:      #15705a;
+  --accent-dim:  #0f5a47;
+  --accent-glow: rgba(129, 204, 192, 0.32);
+  --on-accent:   #ffffff;
+  --green:       #2c7539;
+  --green-dim:   rgba(142, 204, 129, 0.30);
+  --yellow:      #856621;
+  --yellow-dim:  rgba(204, 180, 120, 0.28);
+  --red:         #a8434f;
+  --red-dim:     rgba(204, 129, 142, 0.28);
+  --purple:      #8a4796;
+  --purple-dim:  rgba(192, 129, 204, 0.28);
 
-  --assurance-linked:  #0d8c5b;
-  --assurance-partial: #9b4eb8;
-  --assurance-local:   #2b7fb0;
-  --assurance-none:    #6b6b78;
+  --shadow-dark:  #c5cfc9;
+  --shadow-light: #fbfffc;
+  --flow-shadow-dark:  rgba(150, 167, 158, 0.6);
+  --flow-shadow-light: rgba(255, 255, 255, 0.9);
 
-  --section-bg:     rgba(248, 249, 252, 0.88);
-  --section-alt-bg: rgba(240, 242, 247, 0.92);
-  --footer-bg:      rgba(240, 242, 247, 0.92);
+  /* Darkened lane/edge colours so 12px flow labels stay legible on the
+     light canvas (all clear WCAG AA). */
+  --flow-selected: #1a6e5e;
+  --flow-depends:  #2c7539;
+  --flow-usedby:   #8a4796;
+  --flow-calls:    #24744b;
+  --flow-neutral:  #5d6a62;
+
+  --bg-pattern: var(--bg);
+
+  --assurance-linked:  #3d8a47;
+  --assurance-partial: #8a4796;
+  --assurance-local:   #1f7d64;
+  --assurance-none:    #6f7d74;
+
+  --section-bg:     var(--bg);
+  --section-alt-bg: var(--bg-alt);
+  --footer-bg:      var(--bg-alt);
 }
 
 html {
@@ -126,7 +169,7 @@ body {
   background: transparent;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  text-shadow: none;
   overflow-x: clip;
 }
 
@@ -139,9 +182,6 @@ body {
 body.nav-open {
   overflow: hidden;
 }
-[data-theme="light"] body {
-  text-shadow: none;
-}
 
 a {
   color: var(--accent);
@@ -149,22 +189,26 @@ a {
   transition: color 0.2s;
 }
 a:hover {
+  color: var(--accent-dim);
+}
+[data-theme="light"] a:hover {
   color: var(--text-bright);
 }
 
 code {
   font-family: var(--font-mono);
   font-size: 0.875em;
-  background: var(--surface);
-  padding: 0.15em 0.4em;
-  border-radius: 0.25rem;
+  background: var(--surface-2);
+  padding: 0.15em 0.45em;
+  border-radius: 0.45rem;
+  box-shadow: inset 1px 1px 2px var(--shadow-dark), inset -1px -1px 2px var(--shadow-light);
   color: var(--accent);
 }
 
 pre {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--neu-inset);
   padding: 1.25rem 1.5rem;
   overflow-x: auto;
   font-size: 0.8125rem;
@@ -217,7 +261,7 @@ em {
   left: 1rem;
   z-index: 1001;
   background: var(--accent);
-  color: var(--bg);
+  color: var(--on-accent);
   padding: 0.5rem 1rem;
   border-radius: var(--radius);
   font-weight: 600;
@@ -226,7 +270,7 @@ em {
 }
 .skip-link:focus {
   top: 0.75rem;
-  color: var(--bg);
+  color: var(--on-accent);
 }
 
 /* --- Container --- */
@@ -251,23 +295,8 @@ em {
   padding-right: env(safe-area-inset-right);
 }
 .nav.scrolled {
-  background: rgba(8, 12, 21, 0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 1px 0 var(--border);
-}
-
-@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-  .nav.scrolled {
-    background: rgba(8, 12, 21, 0.985);
-  }
-
-  [data-theme="light"] .nav.scrolled {
-    background: rgba(248, 249, 252, 0.985);
-  }
-}
-[data-theme="light"] .nav.scrolled {
-  background: rgba(248, 249, 252, 0.92);
+  background: var(--bg);
+  box-shadow: 0 5px 16px var(--shadow-dark);
 }
 
 .nav-inner {
@@ -355,13 +384,17 @@ em {
 
 .nav-links a.nav-cta {
   background: var(--accent);
-  color: var(--bg);
+  color: var(--on-accent);
   font-weight: 600;
-  padding: 0.4rem 1rem;
+  padding: 0.45rem 1.1rem;
+  box-shadow: var(--neu-raised-sm);
 }
 .nav-links a.nav-cta:hover {
   background: var(--accent-dim);
   color: var(--on-accent);
+}
+.nav-links a.nav-cta:active {
+  box-shadow: var(--neu-inset-sm);
 }
 
 .nav-toggle {
@@ -396,10 +429,10 @@ em {
   transform: translateY(-6px) rotate(-45deg);
 }
 
-/* --- Theme Toggle --- */
+/* --- Theme Toggle (neumorphic raised button) --- */
 .theme-toggle {
-  background: none;
-  border: 1px solid var(--border);
+  background: var(--bg);
+  border: none;
   border-radius: var(--radius);
   padding: 0.4rem;
   cursor: pointer;
@@ -407,16 +440,19 @@ em {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  width: 2.5rem;
+  height: 2.5rem;
+  box-shadow: var(--neu-raised-sm);
+  transition: color 0.2s, box-shadow 0.2s;
   flex-shrink: 0;
   touch-action: manipulation;
 }
 .theme-toggle:hover {
   color: var(--accent);
-  border-color: var(--accent);
-  background: var(--accent-glow);
+}
+.theme-toggle:active {
+  color: var(--accent);
+  box-shadow: var(--neu-inset-sm);
 }
 .theme-toggle svg {
   width: 1.125rem;
@@ -518,18 +554,14 @@ a.arch-block:hover {
   padding: calc(var(--nav-height) + 2.25rem) 0 4rem;
 }
 
+/* Neumorphism uses a flat, even plane — the hero glow is intentionally off. */
 .hero-bg {
-  opacity: 1;
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 60% 50% at 50% 40%, rgba(91, 160, 245, 0.16), transparent),
-    radial-gradient(ellipse 40% 30% at 70% 60%, rgba(78, 201, 137, 0.08), transparent);
-  pointer-events: none;
+  display: none;
 }
 
-/* Static background glow — a fixed, pointer-transparent layer behind all
-   content. (Replaces the former WebGL canvas; pure CSS, no JS.) */
+/* Flat, fixed background plane behind all content. (Replaces the former WebGL
+   canvas; pure CSS, no JS.) A uniform surface is what lets the paired
+   neumorphic shadows read as raised/recessed. */
 .site-backdrop {
   position: fixed;
   inset: 0;
@@ -630,35 +662,35 @@ html:not([data-theme="light"]) .hero-subtitle {
 .btn {
   display: inline-flex;
   align-items: center;
-  padding: 0.75rem 1.75rem;
+  padding: 0.7rem 1.6rem;
   font-size: 0.9375rem;
   font-weight: 600;
   border-radius: var(--radius);
-  transition: transform 0.2s, background 0.2s, color 0.2s, border-color 0.2s;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
   cursor: pointer;
   border: none;
   text-decoration: none;
+  box-shadow: var(--neu-raised-sm);
+}
+.btn:active {
+  box-shadow: var(--neu-inset-sm);
 }
 
 .btn-primary {
   background: var(--accent);
-  color: var(--bg);
+  color: var(--on-accent);
 }
 .btn-primary:hover {
   background: var(--accent-dim);
   color: var(--on-accent);
-  transform: translateY(-1px);
 }
 
 .btn-secondary {
-  background: transparent;
+  background: var(--bg);
   color: var(--text);
-  border: 1px solid var(--border);
 }
 .btn-secondary:hover {
-  border-color: var(--accent);
   color: var(--accent);
-  transform: translateY(-1px);
 }
 
 /* --- Sections --- */
@@ -700,11 +732,11 @@ html:not([data-theme="light"]) .hero-subtitle {
 .grid-2 { grid-template-columns: repeat(2, 1fr); }
 .grid-3 { grid-template-columns: repeat(3, 1fr); }
 
-/* --- Cards --- */
+/* --- Cards (neumorphic raised panels) --- */
 .card {
   background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
+  box-shadow: var(--neu-raised);
   padding: 2rem;
 }
 .card h3 {
@@ -757,12 +789,12 @@ html:not([data-theme="light"]) .hero-subtitle {
   color: var(--text-muted);
 }
 
-/* --- Callout Box --- */
+/* --- Callout Box (neumorphic raised, accent-edged) --- */
 .callout {
   background: var(--surface);
-  border: 1px solid var(--accent-dim);
   border-left: 3px solid var(--accent);
   border-radius: var(--radius-lg);
+  box-shadow: var(--neu-raised);
   padding: 2rem 2.5rem;
   margin: 2rem 0;
 }
@@ -905,14 +937,17 @@ html:not([data-theme="light"]) .hero-subtitle {
 
 .feature-card {
   background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
+  box-shadow: var(--neu-raised);
   padding: 2rem;
-  transition: border-color 0.2s, transform 0.2s;
+  transition: box-shadow 0.2s, color 0.2s;
 }
-.feature-card:hover {
-  border-color: var(--accent-dim);
-  transform: translateY(-2px);
+a.feature-card:hover {
+  box-shadow: var(--neu-inset);
+  color: var(--accent);
+}
+a.feature-card:hover h3 {
+  color: var(--accent);
 }
 
 .feature-icon {
@@ -1525,8 +1560,12 @@ html:not([data-theme="light"]) .hero-subtitle {
   /* Nav mobile */
   .nav-toggle {
     display: inline-flex;
-    border: 1px solid var(--border);
+    background: var(--bg);
     border-radius: var(--radius);
+    box-shadow: var(--neu-raised-sm);
+  }
+  .nav-toggle:active {
+    box-shadow: var(--neu-inset-sm);
   }
   .nav-controls {
     margin-left: auto;
@@ -1541,12 +1580,9 @@ html:not([data-theme="light"]) .hero-subtitle {
     left: 0;
     right: 0;
     margin-left: 0;
-    background: rgba(10, 14, 23, 0.97);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: var(--bg);
     flex-direction: column;
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--border);
     gap: 0;
     max-height: calc(100vh - var(--nav-height));
     max-height: calc(100svh - var(--nav-height));
@@ -1555,10 +1591,7 @@ html:not([data-theme="light"]) .hero-subtitle {
     padding-left: max(1rem, env(safe-area-inset-left));
     padding-right: max(1rem, env(safe-area-inset-right));
     padding-bottom: calc(1rem + env(safe-area-inset-bottom));
-    box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.32);
-  }
-  [data-theme="light"] .nav-links {
-    background: rgba(248, 249, 252, 0.97);
+    box-shadow: var(--neu-raised);
   }
   .nav-links.open {
     display: flex;
@@ -1804,11 +1837,11 @@ button:focus-visible {
 
 /* Selection */
 ::selection {
-  background: rgba(91, 160, 245, 0.3);
+  background: rgba(129, 204, 192, 0.3);
   color: var(--heading);
 }
 [data-theme="light"] ::selection {
-  background: rgba(43, 111, 208, 0.22);
+  background: rgba(129, 204, 192, 0.4);
   color: var(--heading);
 }
 

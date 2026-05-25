@@ -11,7 +11,7 @@
     try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
 
     if (themeColorMeta) {
-      themeColorMeta.setAttribute("content", theme === "light" ? "#f8f9fc" : "#080c15");
+      themeColorMeta.setAttribute("content", theme === "light" ? "#e6ece8" : "#262d29");
     }
   }
 

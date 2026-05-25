@@ -30,7 +30,19 @@ Other features: codebase selector, context search over modules and
 `Module.declaration` names, keyboard navigation (`J`/`K` to move between
 modules, `/` to focus search, `Esc` to close), reset, and a light/dark theme
 toggle. Module and declaration nodes link to their source on GitHub. Panning
-and zooming use native scrolling. The background is a static CSS gradient.
+and zooming use native scrolling.
+
+## Theme
+
+The site uses a **neumorphic** ("soft UI") theme in both light and dark modes:
+surfaces share the background colour and are shaped by paired soft shadows
+(light top-left, dark bottom-right) rather than borders, over a flat, uniform
+background. The palette is built from five pastel anchors — `#8ECC81`,
+`#81CC9A`, `#81CCC0`, `#C081CC`, `#CC818E` — used as decorative fills and
+accents, with darkened variants carrying text so contrast stays WCAG-AA. All
+theme values live in CSS custom properties (`assets/css/style.css`); the flow
+chart reads its lane and node-shadow colours from those variables so it stays
+in sync when the theme changes.
 
 Deep links are supported, e.g. `map.html?codebase=rust` or
 `map.html?codebase=lean&module=LegalKernel` or

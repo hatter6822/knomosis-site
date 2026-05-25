@@ -41,12 +41,29 @@
   var DEFAULT_REF = "main";
   var NEIGHBOR_LIMIT = 10;
 
-  /* Edge / lane colours — shared with the legend and lane labels. */
-  var COLOR_SELECTED = "#7c9cff";
-  var COLOR_DEPENDS  = "#35c98f"; /* modules the selected one depends on */
-  var COLOR_USED_BY  = "#ffad42"; /* modules that depend on the selected one */
-  var COLOR_CALLS    = "#82f0b0"; /* outgoing declaration calls */
-  var COLOR_NEUTRAL  = "#8fa3bf";
+  /* Edge / lane colours — shared with the legend and lane labels. These hold
+     the dark-theme defaults and are refreshed from the per-theme CSS
+     custom properties (--flow-*) at the start of each render, so labels stay
+     legible (WCAG AA) on whichever theme is active. */
+  var COLOR_SELECTED = "#81ccc0"; /* selected module / declaration */
+  var COLOR_DEPENDS  = "#8ecc81"; /* modules the selected one depends on */
+  var COLOR_USED_BY  = "#c081cc"; /* modules that depend on the selected one */
+  var COLOR_CALLS    = "#81cc9a"; /* outgoing declaration calls */
+  var COLOR_NEUTRAL  = "#9aa8a0";
+
+  function refreshFlowColors() {
+    if (typeof window === "undefined" || !document.documentElement) return;
+    var cs = getComputedStyle(document.documentElement);
+    function read(name, current) {
+      var value = cs.getPropertyValue(name).trim();
+      return value || current;
+    }
+    COLOR_SELECTED = read("--flow-selected", COLOR_SELECTED);
+    COLOR_DEPENDS  = read("--flow-depends", COLOR_DEPENDS);
+    COLOR_USED_BY  = read("--flow-usedby", COLOR_USED_BY);
+    COLOR_CALLS    = read("--flow-calls", COLOR_CALLS);
+    COLOR_NEUTRAL  = read("--flow-neutral", COLOR_NEUTRAL);
+  }
 
   /* Adaptive declaration-kind grouping that spans all three languages.
      Any kind not listed here falls into a dynamically created "Other" group. */
@@ -59,17 +76,27 @@
     { key: "values",    label: "Constants",            kinds: ["const", "static"] },
     { key: "events",    label: "Events & Errors",      kinds: ["event", "error"] }
   ];
+  /* Declaration-kind tints — derived from the five palette anchors and used as
+     decorative chip/border/stroke accents (not as text), so the soft pastels
+     are fine on both themes. */
   var KIND_COLOR_MAP = dict({
-    structure: "#72d5ff", inductive: "#8ecbff", class: "#6ae3d8",
-    struct: "#72d5ff", enum: "#8ecbff", type: "#6ae3d8", trait: "#5ab8ff",
-    contract: "#72d5ff", interface: "#6ae3d8", library: "#5ab8ff", abstract_contract: "#8ecbff",
-    def: "#82f0b0", abbrev: "#8be4cb", fn: "#82f0b0", function: "#82f0b0",
-    constructor: "#6ee0a0", receive: "#8be4cb", modifier: "#9ce5b0", opaque: "#9ec5ff",
-    theorem: "#ffd782",
-    instance: "#d0b7ff", impl: "#c8a5ff",
-    namespace: "#ff84b6", mod: "#ff9bc7",
-    const: "#f7b0ff", static: "#f0a0e0",
-    event: "#ffb38a", error: "#ff9fb0"
+    /* Types — teal */
+    structure: "#81ccc0", inductive: "#8fd3c8", class: "#72c6b8",
+    struct: "#81ccc0", enum: "#8fd3c8", type: "#72c6b8", trait: "#6abbac",
+    contract: "#81ccc0", interface: "#8fd3c8", library: "#6abbac", abstract_contract: "#72c6b8",
+    /* Functions — green / mint */
+    def: "#8ecc81", abbrev: "#9ad48e", fn: "#8ecc81", function: "#8ecc81",
+    constructor: "#81cc9a", receive: "#8fd1a6", modifier: "#9bd6ad", opaque: "#a6d99b",
+    /* Theorems — purple */
+    theorem: "#c081cc",
+    /* Instances & impls — rose */
+    instance: "#cc818e", impl: "#d3919c",
+    /* Namespaces & modules — orchid */
+    namespace: "#cf9ad6", mod: "#d7a8dc",
+    /* Constants — mint */
+    const: "#81cc9a", static: "#94d3a8",
+    /* Events & errors — rose */
+    event: "#d39aa3", error: "#cc818e"
   });
   var KIND_ALL_VALUE = "__all__";
 
@@ -743,6 +770,20 @@
     return node;
   }
 
+  /* Read the per-theme neumorphic flood colours for the node shadow filter. */
+  function flowShadowColors() {
+    var cs = (typeof window !== "undefined" && document.documentElement)
+      ? getComputedStyle(document.documentElement) : null;
+    function read(name, fallback) {
+      var value = cs ? cs.getPropertyValue(name).trim() : "";
+      return value || fallback;
+    }
+    return {
+      dark: read("--flow-shadow-dark", "rgba(0, 0, 0, 0.45)"),
+      light: read("--flow-shadow-light", "rgba(255, 255, 255, 0.5)")
+    };
+  }
+
   var LABEL_WRAP_CACHE = new Map();
   function wrapLabelLines(text, width, minChars) {
     if (!text) return [];
@@ -856,6 +897,17 @@
     });
     marker.appendChild(createSvgNode("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: "currentColor" }));
     defs.appendChild(marker);
+
+    /* Neumorphic soft shadow for nodes: a dark drop-shadow (bottom-right) and a
+       light highlight (top-left), so nodes read as raised from the recessed
+       canvas. Flood colours are pulled from the active theme; boot() re-renders
+       on theme change so they stay correct. */
+    var floods = flowShadowColors();
+    var nodeShadow = createSvgNode("filter", { id: "flow-node-shadow", x: "-25%", y: "-25%", width: "150%", height: "150%" });
+    nodeShadow.appendChild(createSvgNode("feDropShadow", { dx: "3", dy: "3", stdDeviation: "3", "flood-color": floods.dark, "flood-opacity": "1" }));
+    nodeShadow.appendChild(createSvgNode("feDropShadow", { dx: "-3", dy: "-3", stdDeviation: "3", "flood-color": floods.light, "flood-opacity": "1" }));
+    defs.appendChild(nodeShadow);
+
     svg.appendChild(defs);
 
     var edgeLayer = createSvgNode("g", { "class": "flow-edge-layer", "aria-hidden": "true" });
@@ -1039,6 +1091,7 @@
   function renderFlowchart() {
     var wrap = DOM.flowWrap;
     if (!wrap) return;
+    refreshFlowColors();
     var shouldPreserveScroll = !prefersCompactViewport() && !state.flowScrollTarget;
     var previousScrollLeft = shouldPreserveScroll ? wrap.scrollLeft : 0;
     var previousScrollTop = shouldPreserveScroll ? wrap.scrollTop : 0;
@@ -1201,6 +1254,7 @@
   function renderDeclarationFlowchart() {
     var wrap = DOM.flowWrap;
     if (!wrap) return;
+    refreshFlowColors();
     var shouldPreserveScroll = !prefersCompactViewport() && !state.flowScrollTarget;
     var previousScrollLeft = shouldPreserveScroll ? wrap.scrollLeft : 0;
     var previousScrollTop = shouldPreserveScroll ? wrap.scrollTop : 0;
@@ -1766,6 +1820,18 @@
     }, { passive: true });
   }
 
+  /* Re-render the flow chart when the theme changes so the SVG node-shadow
+     flood colours (baked from CSS variables at build time) stay in sync. */
+  function setupThemeObserver() {
+    if (typeof MutationObserver !== "function") return;
+    var observer = new MutationObserver(function (mutations) {
+      for (var i = 0; i < mutations.length; i++) {
+        if (mutations[i].attributeName === "data-theme") { scheduleRender(); return; }
+      }
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  }
+
   /* ── Boot ──────────────────────────────────────────────────── */
   function boot() {
     cacheDomElements();
@@ -1773,6 +1839,7 @@
     setupControls();
     setupKeyboardNavigation();
     setupResize();
+    setupThemeObserver();
     loadCodemap(state.codebase, requested);
   }
 

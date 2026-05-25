@@ -48,10 +48,12 @@ test("kindLabel humanizes kinds", () => {
 });
 
 test("kindColor maps known kinds and falls back for unknown", () => {
-  assert.equal(map.kindColor("theorem"), "#ffd782");
-  assert.equal(map.kindColor("def"), "#82f0b0");
-  assert.equal(map.kindColor("totally-unknown-kind"), "#8fa3bf");
-  assert.equal(map.kindColor(""), "#8fa3bf");
+  assert.equal(map.kindColor("theorem"), "#c081cc");
+  assert.equal(map.kindColor("def"), "#8ecc81");
+  assert.equal(map.kindColor("constructor"), "#81cc9a", "real constructor kind keeps its colour");
+  assert.equal(map.kindColor("totally-unknown-kind"), "#9aa8a0");
+  assert.equal(map.kindColor("toString"), "#9aa8a0", "prototype key does not leak a colour");
+  assert.equal(map.kindColor(""), "#9aa8a0");
 });
 
 /* ── colour maths ──────────────────────────────────────────────── */
