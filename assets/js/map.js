@@ -242,6 +242,7 @@
     var moduleMap = Object.create(null);
     var moduleMeta = Object.create(null);
     var declarationIndex = Object.create(null);
+    var moduleDeclNames = Object.create(null); /* module -> set of its declaration names */
     var moduleNames = [];
     var kindCounts = Object.create(null);
     var declarationCount = 0;
@@ -251,6 +252,7 @@
       var name = item.module || item.path || "unknown";
       var declarations = Array.isArray(item.declarations) ? item.declarations : [];
       var byKind = Object.create(null);
+      var declNames = Object.create(null);
 
       declarations.forEach(function (decl) {
         if (!decl || typeof decl.name !== "string" || !decl.name) return;
@@ -258,12 +260,15 @@
         var line = Number(decl.line) || 0;
         if (!byKind[kind]) byKind[kind] = [];
         byKind[kind].push({ name: decl.name, line: line });
+        declNames[decl.name] = true;
         kindCounts[kind] = (kindCounts[kind] || 0) + 1;
         declarationCount += 1;
         if (!declarationIndex[decl.name]) {
           declarationIndex[decl.name] = { module: name, kind: kind, line: line };
         }
       });
+
+      moduleDeclNames[name] = declNames;
 
       moduleMap[name] = item.path || "";
       moduleMeta[name] = {
@@ -313,10 +318,22 @@
         if (!decl || typeof decl.name !== "string" || !decl.name) return;
         var called = Array.isArray(decl.called) ? decl.called : [];
         called.forEach(function (callee) {
-          var target = declarationIndex[callee];
-          if (!target) return;
+          /* `called` entries are bare names with no module qualification, so a
+             name that exists in several modules is inherently ambiguous. Prefer
+             a declaration the source module defines itself (an intra-module call
+             — the overwhelmingly common case), and only fall back to the global
+             first-seen index for genuinely external names. This avoids the false
+             cross-module edges that a pure first-wins lookup would create. */
+          var targetModule;
+          if (moduleDeclNames[sourceName] && moduleDeclNames[sourceName][callee]) {
+            targetModule = sourceName;
+          } else {
+            var target = declarationIndex[callee];
+            if (!target) return;
+            targetModule = target.module;
+          }
           addDeclCall(decl.name, sourceName, callee);
-          if (target.module !== sourceName) addModuleEdge(sourceName, target.module);
+          if (targetModule !== sourceName) addModuleEdge(sourceName, targetModule);
         });
       });
     });
@@ -458,24 +475,32 @@
     return false;
   }
 
-  /* Resolve a "Module.declaration" reference (from a deep link) to a concrete
-     module + declaration, preferring the module prefix when it actually owns
-     the declaration, and falling back to the global declaration index. */
+  /* Resolve a legacy combined "Module.declaration" deep-link reference (used
+     before module and declaration were separate query params) to a concrete
+     module + declaration. Both module names (Lean: `A.B.C`) and declaration
+     names (Lean: `Action.compile`) can contain dots, so the order matters:
+       1. longest module prefix that actually owns the suffix declaration,
+       2. the WHOLE ref as a declaration name (covers dotted decl names),
+       3. only then the bare suffix after the last dot.
+     This is the fallback path; current links use unambiguous separate params. */
   function resolveDeclRef(ref) {
     if (!ref) return null;
     var dot = ref.lastIndexOf(".");
     if (dot > 0) {
       var prefix = ref.slice(0, dot);
-      var declName = ref.slice(dot + 1);
-      if (declName && state.moduleMap[prefix] && moduleHasDeclaration(prefix, declName)) {
-        return { module: prefix, decl: declName };
-      }
-      if (declName && state.declarationIndex[declName]) {
-        return { module: declarationModuleOf(declName), decl: declName };
+      var suffix = ref.slice(dot + 1);
+      if (suffix && state.moduleMap[prefix] && moduleHasDeclaration(prefix, suffix)) {
+        return { module: prefix, decl: suffix };
       }
     }
     if (state.declarationIndex[ref]) {
       return { module: declarationModuleOf(ref), decl: ref };
+    }
+    if (dot > 0) {
+      var bare = ref.slice(dot + 1);
+      if (bare && state.declarationIndex[bare]) {
+        return { module: declarationModuleOf(bare), decl: bare };
+      }
     }
     return null;
   }
@@ -1651,8 +1676,13 @@
     if (!window.history || !window.history.replaceState) return;
     var params = new URLSearchParams();
     params.set("codebase", state.codebase);
+    /* Encode the module and declaration as separate params (each a single
+       value via URLSearchParams), never a dot-joined string — module and
+       declaration names both contain dots, so a combined "Module.decl" form
+       cannot be split back unambiguously. */
     if (state.flowContext === "declaration" && state.selectedDeclaration) {
-      params.set("decl", state.selectedDeclarationModule + "." + state.selectedDeclaration);
+      params.set("module", state.selectedDeclarationModule);
+      params.set("decl", state.selectedDeclaration);
     } else if (state.selectedModule) {
       params.set("module", state.selectedModule);
     }
@@ -1727,7 +1757,16 @@
       var list = sortedModuleList();
       var landing = list.length ? list[0] : null;
       if (requested && requested.decl) {
-        var declRef = resolveDeclRef(requested.decl);
+        var declRef = null;
+        /* Preferred form: a valid `module` param that owns the bare `decl`
+           name — unambiguous regardless of dots in either name. */
+        if (requested.module && state.moduleMap[requested.module] &&
+            moduleHasDeclaration(requested.module, requested.decl)) {
+          declRef = { module: requested.module, decl: requested.decl };
+        } else {
+          /* Fallback for bare names and legacy combined "Module.decl" links. */
+          declRef = resolveDeclRef(requested.decl);
+        }
         if (declRef) {
           state.selectedModule = declRef.module;
           state.flowContext = "declaration";
@@ -1862,6 +1901,7 @@
       applyGraph: applyGraph,
       sanitizeRepoUrl: sanitizeRepoUrl,
       resolveDeclRef: resolveDeclRef,
+      moduleHasDeclaration: moduleHasDeclaration,
       interiorForModule: interiorForModule,
       interiorGroups: interiorGroups,
       interiorItemsForSelection: interiorItemsForSelection,

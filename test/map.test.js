@@ -258,3 +258,45 @@ test("interiorForModule reflects a real module's declarations", () => {
   assert.equal(sum, interior.total, "interior total equals sum of per-kind counts");
   assert.ok(interior.total > 0);
 });
+
+/* ── Name-collision handling: same-module call resolution (PR #2 review) ── */
+test("buildGraph resolves a call to a locally-defined name as intra-module", () => {
+  // B is indexed first, so a pure first-wins lookup of "bar" would point to B.
+  const raw = { modules: [
+    { module: "B", path: "b.rs", declarations: [{ kind: "fn", name: "bar", line: 1, called: [] }] },
+    { module: "A", path: "a.rs", declarations: [
+      { kind: "fn", name: "bar", line: 1, called: [] },
+      { kind: "fn", name: "foo", line: 2, called: ["bar"] }
+    ] }
+  ] };
+  const g = map.buildGraph(raw);
+  assert.deepEqual(g.importsFrom["A"] || [], [], "A.foo -> local bar must not create a cross-module edge to B");
+  assert.deepEqual(g.importsTo["B"] || [], [], "B is not depended on");
+});
+
+test("buildGraph still resolves a non-local call cross-module", () => {
+  const raw = { modules: [
+    { module: "B", path: "b.rs", declarations: [{ kind: "fn", name: "bar", line: 1, called: [] }] },
+    { module: "C", path: "c.rs", declarations: [{ kind: "fn", name: "baz", line: 1, called: ["bar"] }] }
+  ] };
+  const g = map.buildGraph(raw);
+  assert.deepEqual(g.importsFrom["C"], ["B"], "C.baz -> B.bar (bar not defined in C)");
+  assert.deepEqual(g.importsTo["B"], ["C"]);
+});
+
+/* ── Unambiguous deep links for dotted names (PR #2 review) ── */
+test("dotted declaration names resolve via module + bare decl", () => {
+  const raw = { repository: { url: "https://github.com/x/y" }, modules: [
+    { module: "Mod", path: "Mod.lean", declarations: [
+      { kind: "def", name: "Action.compile", line: 5, called: [] },
+      { kind: "def", name: "plain", line: 6, called: [] }
+    ] }
+  ] };
+  map.applyGraph(map.buildGraph(raw));
+  // Preferred path used by deep links: (module, bare decl) — exact even with dots.
+  assert.equal(map.moduleHasDeclaration("Mod", "Action.compile"), true);
+  assert.equal(map.moduleHasDeclaration("Mod", "missing"), false);
+  // Legacy combined-ref fallback: the whole dotted name is tried as a decl name.
+  assert.deepEqual(map.resolveDeclRef("Action.compile"), { module: "Mod", decl: "Action.compile" });
+  assert.deepEqual(map.resolveDeclRef("Mod.plain"), { module: "Mod", decl: "plain" });
+});
