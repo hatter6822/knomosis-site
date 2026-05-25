@@ -2,11 +2,12 @@
 
 Dependency-minimized static website for the [Knomosis](https://github.com/hatter6822/Knomosis)
 project, inspired by the vanilla-JS architecture used on the seLe4n site. No
-frameworks, no build step — just HTML, CSS, and vanilla JavaScript.
+frameworks, no build step, no runtime dependencies — just HTML, CSS, and
+vanilla JavaScript.
 
 ## Pages
 
-- `index.html` — project overview, animated background, and links into the maps.
+- `index.html` — project overview and links into the maps.
 - `map.html` — the **Adaptive Codebase Navigator**: an interactive flow chart
   viewer for the Lean, Rust, and Solidity codemaps.
 
@@ -27,12 +28,13 @@ A single canonical flow graph is rendered for every codebase:
 
 Other features: codebase selector, context search over modules and
 `Module.declaration` names, keyboard navigation (`J`/`K` to move between
-modules, `/` to focus search), reset, light/dark theme, and a pausable
-animated background. Module and declaration nodes link to their source on
-GitHub.
+modules, `/` to focus search, `Esc` to close), reset, and a light/dark theme
+toggle. Module and declaration nodes link to their source on GitHub. Panning
+and zooming use native scrolling. The background is a static CSS gradient.
 
 Deep links are supported, e.g. `map.html?codebase=rust` or
-`map.html?codebase=lean&module=LegalKernel`.
+`map.html?codebase=lean&module=LegalKernel` or
+`map.html?codebase=solidity&decl=KnomosisDisputeVerifier.run`.
 
 ## Codemap data
 
@@ -45,24 +47,44 @@ The viewer reads JSON codemaps bundled from the Knomosis repository:
 Each codemap contains `modules[]`, where every module has `declarations[]`
 (`kind`, `name`, `line`, `called[]`). Cross-module links and the declaration
 call graph are derived at load time by resolving each declaration's `called`
-list against a global declaration index — nothing is hand-drawn.
+list against a global declaration index — nothing is hand-drawn. Because
+resolution is by declaration name, a name shared across modules resolves to its
+first occurrence; the derived graph remains consistent (this is the only
+approximation in the model).
 
 ## Assets
 
 - `assets/css/style.css`, `assets/css/map.css` — styling.
-- `assets/js/theme-init.js` — applies the saved/system theme before paint.
-- `assets/js/header-nav.js` — navigation behaviour.
-- `assets/js/ui-controls.js` — theme and background-animation toggles.
-- `assets/js/background-pattern.js` — WebGL animated background (degrades to a
-  static gradient where WebGL or motion is unavailable).
-- `assets/js/map.js` — the codemap navigator.
+- `assets/js/theme-init.js` — applies the saved/system theme before first paint
+  (avoids a flash of the wrong theme).
+- `assets/js/header-nav.js` — navigation behaviour and in-page scrolling.
+- `assets/js/ui-controls.js` — the light/dark theme toggle.
+- `assets/js/map.js` — the codemap navigator (the only non-trivial script).
 
 ## Local development
 
 Serve the project with any static file server, for example:
 
 ```bash
+npm run serve        # python3 -m http.server 8080
+# or
 python3 -m http.server 8080
 ```
 
 Then open `http://localhost:8080`.
+
+## Tests
+
+The pure, DOM-free logic of `map.js` (graph building, the adaptive kind
+grouping, search, colour maths, URL/deep-link resolution, and input
+sanitisation) is unit-tested with the built-in Node test runner — **no test
+dependencies are installed**:
+
+```bash
+npm test             # node --test
+```
+
+`map.js` only boots in a browser (it checks for `window`/`document`) and exposes
+its internals via `module.exports` under Node, so the tests run no DOM code. The
+suite also validates that the bundled codemaps are internally consistent
+(summary counts, edge symmetry, and declaration call-graph invariants).

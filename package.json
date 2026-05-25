@@ -1,0 +1,11 @@
+{
+  "name": "knomosis-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dependency-minimized static website and adaptive codemap viewer for the Knomosis project.",
+  "scripts": {
+    "test": "node --test",
+    "serve": "python3 -m http.server 8080"
+  },
+  "license": "GPL-3.0-or-later"
+}

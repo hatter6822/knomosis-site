@@ -21,12 +21,21 @@
 (function () {
   "use strict";
 
+  /* Prototype-free lookup so untrusted keys (e.g. ?codebase=constructor) can
+     never resolve to an inherited Object.prototype member. */
+  function dict(entries) {
+    return Object.assign(Object.create(null), entries);
+  }
+  function hasOwn(obj, key) {
+    return Object.prototype.hasOwnProperty.call(obj, key);
+  }
+
   /* ── Configuration ─────────────────────────────────────────── */
-  var MAP_SOURCES = {
+  var MAP_SOURCES = dict({
     lean:     { path: "data/codemaps/lean.json",     label: "Lean" },
     rust:     { path: "data/codemaps/rust.json",     label: "Rust" },
     solidity: { path: "data/codemaps/solidity.json", label: "Solidity" }
-  };
+  });
   var DEFAULT_CODEBASE = "lean";
   var DEFAULT_REPO_URL = "https://github.com/hatter6822/Knomosis";
   var DEFAULT_REF = "main";
@@ -50,16 +59,7 @@
     { key: "values",    label: "Constants",            kinds: ["const", "static"] },
     { key: "events",    label: "Events & Errors",      kinds: ["event", "error"] }
   ];
-  var KIND_TO_GROUP = (function () {
-    var map = Object.create(null);
-    for (var i = 0; i < KIND_GROUPS.length; i++) {
-      var group = KIND_GROUPS[i];
-      for (var j = 0; j < group.kinds.length; j++) map[group.kinds[j]] = group.key;
-    }
-    return map;
-  })();
-
-  var KIND_COLOR_MAP = {
+  var KIND_COLOR_MAP = dict({
     structure: "#72d5ff", inductive: "#8ecbff", class: "#6ae3d8",
     struct: "#72d5ff", enum: "#8ecbff", type: "#6ae3d8", trait: "#5ab8ff",
     contract: "#72d5ff", interface: "#6ae3d8", library: "#5ab8ff", abstract_contract: "#8ecbff",
@@ -70,7 +70,7 @@
     namespace: "#ff84b6", mod: "#ff9bc7",
     const: "#f7b0ff", static: "#f0a0e0",
     event: "#ffb38a", error: "#ff9fb0"
-  };
+  });
   var KIND_ALL_VALUE = "__all__";
 
   /* ── State ─────────────────────────────────────────────────── */
@@ -155,7 +155,7 @@
   }
 
   function prefersCompactViewport() {
-    return Boolean(window.matchMedia && window.matchMedia("(max-width: 900px)").matches);
+    return typeof window !== "undefined" && !!window.matchMedia && window.matchMedia("(max-width: 900px)").matches;
   }
 
   function parseHexColor(hex) {
@@ -194,6 +194,15 @@
     if (includeBackground) {
       node.style.backgroundColor = "color-mix(in oklab, " + color + " 18%, var(--surface) 82%)";
     }
+  }
+
+  /* Only trust an http(s) repository URL for building source links; anything
+     else (e.g. a "javascript:" scheme injected into the JSON) is rejected in
+     favour of the known-safe default so generated <a href> values stay safe. */
+  function sanitizeRepoUrl(url) {
+    if (typeof url !== "string") return DEFAULT_REPO_URL;
+    if (!/^https?:\/\//i.test(url)) return DEFAULT_REPO_URL;
+    return url.replace(/\/+$/, "");
   }
 
   /* ── Build the graph from raw codemap JSON ─────────────────── */
@@ -300,7 +309,7 @@
     });
 
     return {
-      repoUrl: (raw.repository && raw.repository.url) || DEFAULT_REPO_URL,
+      repoUrl: sanitizeRepoUrl(raw.repository && raw.repository.url),
       schemaVersion: raw.schema_version || "",
       summary: raw.summary || {},
       sourceDigest: (raw.source_sync && raw.source_sync.source_digest) || "",
@@ -404,6 +413,42 @@
     return Boolean(state.declarationGraph[name]) || Boolean(state.declarationReverseGraph[name]);
   }
 
+  function moduleHasDeclaration(moduleName, declName) {
+    var meta = state.moduleMeta[moduleName];
+    var byKind = meta && meta.symbols && meta.symbols.byKind;
+    if (!byKind) return false;
+    var kinds = Object.keys(byKind);
+    for (var i = 0; i < kinds.length; i++) {
+      var items = byKind[kinds[i]];
+      for (var j = 0; j < items.length; j++) {
+        if (items[j].name === declName) return true;
+      }
+    }
+    return false;
+  }
+
+  /* Resolve a "Module.declaration" reference (from a deep link) to a concrete
+     module + declaration, preferring the module prefix when it actually owns
+     the declaration, and falling back to the global declaration index. */
+  function resolveDeclRef(ref) {
+    if (!ref) return null;
+    var dot = ref.lastIndexOf(".");
+    if (dot > 0) {
+      var prefix = ref.slice(0, dot);
+      var declName = ref.slice(dot + 1);
+      if (declName && state.moduleMap[prefix] && moduleHasDeclaration(prefix, declName)) {
+        return { module: prefix, decl: declName };
+      }
+      if (declName && state.declarationIndex[declName]) {
+        return { module: declarationModuleOf(declName), decl: declName };
+      }
+    }
+    if (state.declarationIndex[ref]) {
+      return { module: declarationModuleOf(ref), decl: ref };
+    }
+    return null;
+  }
+
   /* ── Interior declaration model ────────────────────────────── */
   function interiorForModule(name) {
     var meta = state.moduleMeta[name];
@@ -424,7 +469,7 @@
       var count = 0;
       for (var j = 0; j < def.kinds.length; j++) {
         var kind = def.kinds[j];
-        var items = interior.byKind[kind];
+        var items = hasOwn(interior.byKind, kind) ? interior.byKind[kind] : null;
         if (items && items.length) {
           present.push(kind);
           count += items.length;
@@ -460,7 +505,7 @@
     var aggregated = [];
     var kinds = selectedKind === KIND_ALL_VALUE ? groupKinds : [selectedKind];
     for (var i = 0; i < kinds.length; i++) {
-      var items = interior.byKind[kinds[i]] || [];
+      var items = hasOwn(interior.byKind, kinds[i]) ? interior.byKind[kinds[i]] : [];
       for (var j = 0; j < items.length; j++) {
         aggregated.push({ name: items[j].name, line: items[j].line, __kind: kinds[i] });
       }
@@ -971,7 +1016,7 @@
   function minimumFlowWidth() {
     var now = Date.now();
     if (cachedMinFlowWidth > 0 && now - cachedMinFlowWidthTs < 200) return cachedMinFlowWidth;
-    var width = window.innerWidth || 1200;
+    var width = (typeof window !== "undefined" && window.innerWidth) || 1200;
     var result;
     if (width <= 420) result = Math.max(720, Math.round(width * 2.25));
     else if (width <= 640) result = Math.max(820, Math.round(width * 2.1));
@@ -1622,12 +1667,12 @@
       var list = sortedModuleList();
       var landing = list.length ? list[0] : null;
       if (requested && requested.decl) {
-        var declOnly = requested.decl.indexOf(".") !== -1 ? requested.decl.slice(requested.decl.lastIndexOf(".") + 1) : requested.decl;
-        if (state.declarationIndex[declOnly]) {
-          state.selectedModule = declarationModuleOf(declOnly);
+        var declRef = resolveDeclRef(requested.decl);
+        if (declRef) {
+          state.selectedModule = declRef.module;
           state.flowContext = "declaration";
-          state.selectedDeclaration = declOnly;
-          state.selectedDeclarationModule = state.selectedModule;
+          state.selectedDeclaration = declRef.decl;
+          state.selectedDeclarationModule = declRef.module;
         }
       }
       if (state.flowContext === "module") {
@@ -1731,5 +1776,38 @@
     loadCodemap(state.codebase, requested);
   }
 
-  boot();
+  /* Boot only in a browser; under Node (tests) the DOM/window are absent. */
+  if (typeof window !== "undefined" && typeof document !== "undefined") {
+    boot();
+  }
+
+  /* Expose pure, DOM-free internals for unit testing under Node. This block is
+     skipped entirely in the browser, where `module` is undefined. */
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = {
+      buildGraph: buildGraph,
+      applyGraph: applyGraph,
+      sanitizeRepoUrl: sanitizeRepoUrl,
+      resolveDeclRef: resolveDeclRef,
+      interiorForModule: interiorForModule,
+      interiorGroups: interiorGroups,
+      interiorItemsForSelection: interiorItemsForSelection,
+      moduleDegree: moduleDegree,
+      sortedModuleList: sortedModuleList,
+      moduleSearchMatches: moduleSearchMatches,
+      declarationSearchMatches: declarationSearchMatches,
+      declarationCalls: declarationCalls,
+      declarationCalledBy: declarationCalledBy,
+      kindColor: kindColor,
+      kindLabel: kindLabel,
+      parseHexColor: parseHexColor,
+      blendHexColor: blendHexColor,
+      wrapLabelLines: wrapLabelLines,
+      nodeContentHeight: nodeContentHeight,
+      KIND_GROUPS: KIND_GROUPS,
+      KIND_ALL_VALUE: KIND_ALL_VALUE,
+      DEFAULT_REPO_URL: DEFAULT_REPO_URL,
+      state: state
+    };
+  }
 })();
