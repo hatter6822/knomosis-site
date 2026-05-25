@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark light">
-  <title>Knomosis</title>
-  <meta name="description" content="Knomosis project website and interactive codebase maps for the Lean, Rust, and Solidity components.">
+  <title>Knomosis — A Formally Verified Layer 2</title>
+  <meta name="description" content="Knomosis is a law-governed optimistic rollup: one Lean specification, proven with 899 theorems, lowered into a Solidity settlement layer and a Rust runtime that are cross-checked to behave identically.">
   <meta name="theme-color" content="#262d29" id="theme-color-meta">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
@@ -23,6 +23,8 @@
       <a href="#hero" class="nav-logo" aria-label="Knomosis home">Knomosis</a>
       <ul class="nav-links" id="nav-links" role="list">
         <li><a href="#about">About</a></li>
+        <li><a href="#novel">Features</a></li>
+        <li><a href="#architecture">Architecture</a></li>
         <li><a href="#maps">Code Maps</a></li>
         <li><a href="map.html">Map Viewer</a></li>
         <li><a href="https://github.com/hatter6822/Knomosis" target="_blank" rel="noopener noreferrer" class="nav-cta">GitHub</a></li>
@@ -43,12 +45,30 @@
     <section id="hero" class="hero">
       <div class="hero-bg" aria-hidden="true"></div>
       <div class="container hero-content">
-        <p class="hero-label">Formal Methods · Runtime · On-chain</p>
+        <p class="hero-label">Formally Verified · Law-Governed · Optimistic Rollup</p>
         <h1>Knomosis</h1>
-        <p class="hero-subtitle">A multi-language system spanning Lean proofs, a Rust runtime, and Solidity contracts — explored through browser-native, dependency-light codebase maps.</p>
-        <p class="hero-tagline">Pick a language, pick a module, and follow the call graph.</p>
+        <p class="hero-subtitle">A Layer 2 whose rules are written as machine-checked law. A single Lean&nbsp;4 specification — proven with 899 theorems — is lowered into an on-chain Solidity settlement layer and an off-chain Rust runtime, and the three stacks are continuously cross-checked to behave byte-for-byte identically.</p>
+        <p class="hero-tagline">One specification. Three stacks. <code>Proven</code> to agree.</p>
+        <div class="hero-stats" role="list" aria-label="Project at a glance">
+          <div class="stat" role="listitem">
+            <span class="stat-value">899</span>
+            <span class="stat-label">Theorems proven</span>
+          </div>
+          <div class="stat" role="listitem">
+            <span class="stat-value">15</span>
+            <span class="stat-label">Protocol laws</span>
+          </div>
+          <div class="stat" role="listitem">
+            <span class="stat-value">3</span>
+            <span class="stat-label">Cross-checked stacks</span>
+          </div>
+          <div class="stat" role="listitem">
+            <span class="stat-value">433</span>
+            <span class="stat-label">Code modules</span>
+          </div>
+        </div>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="map.html">Open Codebase Maps</a>
+          <a class="btn btn-primary" href="map.html">Explore the Code Maps</a>
           <a class="btn btn-secondary" href="https://github.com/hatter6822/Knomosis" target="_blank" rel="noopener noreferrer">View on GitHub</a>
         </div>
       </div>
@@ -56,49 +76,191 @@
 
     <section id="about" class="section section-alt">
       <div class="container">
-        <h2 class="section-title">About</h2>
-        <p class="section-lead">Knomosis brings together three codebases that are usually read with three different toolchains. This site renders each one as the same kind of adaptive flow chart, so the structure of the Lean proofs, the Rust runtime, and the Solidity contracts can all be navigated the same way.</p>
+        <h2 class="section-title">A Layer 2 governed by provable law</h2>
+        <p class="section-lead">Most rollups specify their state machine in prose and a reference client, then hope the contracts match. Knomosis turns that around: the protocol <em>is</em> a formal specification. Its entire state-transition function is a small set of named “laws” — written in Lean&nbsp;4, machine-checked, and mechanically lowered into the code that actually runs on and off chain.</p>
         <div class="grid grid-3">
           <article class="card">
-            <h3>One graph, every language</h3>
-            <p>Each map is generated from a JSON codemap of the repository. Modules become nodes; cross-module references become edges. The viewer derives the dependency and call graph directly from the data — nothing is hand-drawn.</p>
+            <h3>Laws, not just code</h3>
+            <p>Every change to L2 state is one of 15 named laws — <code>Mint</code>, <code>Transfer</code>, <code>Deposit</code>, <code>Withdraw</code>, <code>Dispute</code>, <code>Freeze</code>, <code>Reward</code>, and more. Each law is admissible only under an explicit signature-and-authority policy, and is proven to touch exactly the state it declares — nothing else.</p>
           </article>
           <article class="card">
-            <h3>Module and declaration views</h3>
-            <p>Start at a module to see what it depends on and what depends on it. Drill into any declaration to see exactly what it calls and what calls it, with edges marking cross-module references.</p>
+            <h3>One spec, three stacks</h3>
+            <p>The Lean <strong>LegalKernel</strong> is the single source of truth. Solidity contracts settle it on L1, a Rust runtime executes it off-chain, and shared “golden” vectors generated from the spec keep all three implementations producing identical bytes.</p>
           </article>
           <article class="card">
-            <h3>Dependency-minimized</h3>
-            <p>The whole site is vanilla HTML, CSS, and JavaScript — no frameworks, no build step. It mirrors the architecture of the seLe4n project site it was adapted from.</p>
+            <h3>Optimistic, with provable disputes</h3>
+            <p>Sequencers post state roots under bond. Anyone can challenge a bad root, and an interactive bisection game narrows the disagreement down to a single VM step that is re-executed on-chain. Both the convergence and the termination of that game are proved.</p>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="maps" class="section">
+    <section id="novel" class="section">
       <div class="container">
-        <h2 class="section-title">Code Maps</h2>
-        <p class="section-lead">Three codemaps are bundled with the site, one per language scope. Open any of them in the adaptive navigator.</p>
+        <h2 class="section-title">What makes Knomosis novel</h2>
+        <p class="section-lead">The interesting parts are not any single component but how proof, runtime, and contracts are forced to stay in lockstep. Six ideas carry most of the weight.</p>
+        <div class="features-grid">
+          <article class="feature-card">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+            <h3>Law-as-code, via the <code>Lex</code> DSL</h3>
+            <p>Protocol rules are authored in <strong>Lex</strong>, a Lean-embedded DSL with its own grammar, linter, and formatter. Its code generator renders the action types, the transition function, and the CBOR codecs directly into fenced regions of the real sources; a companion <code>diff</code> tool fails the build if hand-written code ever drifts from the spec.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 13.5 15 9.5"/></svg></div>
+            <h3>899 machine-checked theorems</h3>
+            <p>The spec proves properties, not just types: determinism of the transition function, injectivity of every encoder (so state commitments can’t collide), invariant preservation, and resource conservation. Names like <code>applyVerdict_deterministic</code>, <code>apply_admissible_preserves_bridge</code>, and <code>burn_conserves_other_resource</code> are theorems, not tests.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg></div>
+            <h3>Fault proofs proven to converge</h3>
+            <p>The dispute bisection game is proved to <em>converge</em> and to <em>terminate</em> within a bounded number of rounds (<code>bisection_converges_after_enough_rounds</code>, <code>bisection_terminates_in_at_most_max_depth_rounds</code>). An honest challenger is guaranteed to win in bounded time — a liveness property, not just safety.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="6" y="6" width="12" height="12" rx="1.5"/><line x1="9" y1="2" x2="9" y2="6"/><line x1="15" y1="2" x2="15" y2="6"/><line x1="9" y1="18" x2="9" y2="22"/><line x1="15" y1="18" x2="15" y2="22"/><line x1="2" y1="9" x2="6" y2="9"/><line x1="2" y1="15" x2="6" y2="15"/><line x1="18" y1="9" x2="22" y2="9"/><line x1="18" y1="15" x2="22" y2="15"/></svg></div>
+            <h3>A single-step VM, coherent with the spec</h3>
+            <p>Disputes resolve down to one <strong>StepVM</strong> instruction re-executed on L1 by <code>KnomosisStepVM</code>. State lives in a Sparse Merkle Tree of cells with typed cell proofs, and Lean proves the on-chain step commitment matches the kernel (<code>StepVMCoherence</code>, <code>SolidityStepVMCommit</code>) — so the contract can’t disagree with the proof.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+            <h3>Three-way cross-stack conformance</h3>
+            <p>Keccak-256, secp256k1 ECDSA, CBOR, the SMT, the StepVM, and the entire dispute game exist in Lean, Rust, and Solidity at once. Dedicated <code>knomosis-hash-keccak256</code> and <code>knomosis-verify-secp256k1</code> crates plus 12 Solidity <code>CrossCheck</code> suites replay shared golden vectors and assert byte-for-byte agreement.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1"/><path d="M16 3h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2 2 2 0 0 0-2 2v5a2 2 0 0 1-2 2h-1"/></svg></div>
+            <h3>Canonical, provably injective encoding</h3>
+            <p>State and wire formats use canonical CBOR. Lean carries roundtrip and injectivity proofs (<code>cborHeadRoundtrip</code>, <code>cborHeadEncode_injective</code>) and an on-chain decoder (<code>CBEDecode.sol</code>) reads the same bytes — so every participant derives exactly the same Merkle roots.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="architecture" class="section section-alt">
+      <div class="container">
+        <h2 class="section-title">One specification, three stacks</h2>
+        <p class="section-lead">The same protocol is expressed three times, on purpose. Lean proves it, Rust runs it, Solidity settles it — and codegen plus golden vectors keep the lower layers honest. Every block below opens that component in the codebase map.</p>
+
+        <div class="arch-diagram">
+          <div class="arch-layer arch-model">
+            <div class="arch-layer-label">Specification &amp; Proof · Lean&nbsp;4 <span class="arch-layer-stat">266 modules · 4,119 declarations · 899 theorems</span></div>
+            <div class="arch-blocks">
+              <a class="arch-block" href="map.html?codebase=lean&amp;module=LegalKernel">LegalKernel<span class="arch-hint">the state machine</span></a>
+              <a class="arch-block" href="map.html?codebase=lean&amp;module=LegalKernel.Laws.Transfer">Laws<span class="arch-hint">15 transition rules</span></a>
+              <a class="arch-block" href="map.html?codebase=lean&amp;module=LegalKernel.FaultProof.Game">FaultProof<span class="arch-hint">the dispute game</span></a>
+              <a class="arch-block" href="map.html?codebase=lean">Authority &amp; Policy<span class="arch-hint">who may act</span></a>
+              <a class="arch-block" href="map.html?codebase=lean">Encoding<span class="arch-hint">CBOR · SMT roots</span></a>
+              <a class="arch-block" href="map.html?codebase=lean&amp;module=Lex.DSL.Law">Lex DSL<span class="arch-hint">law-as-code + codegen</span></a>
+            </div>
+          </div>
+
+          <div class="arch-layer arch-rust">
+            <div class="arch-layer-label">Off-chain Runtime · Rust <span class="arch-layer-stat">11 crates · 115 modules · 3,397 declarations</span></div>
+            <div class="arch-blocks">
+              <a class="arch-block" href="map.html?codebase=rust&amp;module=runtime::knomosis-host::src::kernel">knomosis-host<span class="arch-hint">sequencer · admission · verdict</span></a>
+              <a class="arch-block" href="map.html?codebase=rust&amp;module=runtime::knomosis-l1-ingest::src::watcher">knomosis-l1-ingest<span class="arch-hint">L1 events · reorgs</span></a>
+              <a class="arch-block" href="map.html?codebase=rust&amp;module=runtime::knomosis-faultproof-observer::src::observer">faultproof-observer<span class="arch-hint">autonomous challenger</span></a>
+              <a class="arch-block" href="map.html?codebase=rust&amp;module=runtime::knomosis-indexer::src::indexer">knomosis-indexer<span class="arch-hint">balances · cursors</span></a>
+              <a class="arch-block" href="map.html?codebase=rust&amp;module=runtime::knomosis-event-subscribe::src::subscription">event-subscribe<span class="arch-hint">streaming API</span></a>
+              <a class="arch-block" href="map.html?codebase=rust&amp;module=runtime::knomosis-storage::src::storage">knomosis-storage<span class="arch-hint">SQLite persistence</span></a>
+              <a class="arch-block" href="map.html?codebase=rust&amp;module=runtime::knomosis-hash-keccak256::src::hash">hash-keccak256<span class="arch-hint">cross-checked primitive</span></a>
+              <a class="arch-block" href="map.html?codebase=rust&amp;module=runtime::knomosis-verify-secp256k1::src::verify">verify-secp256k1<span class="arch-hint">cross-checked primitive</span></a>
+            </div>
+          </div>
+
+          <div class="arch-layer arch-security">
+            <div class="arch-layer-label">On-chain Settlement · Solidity <span class="arch-layer-stat">52 modules · 1,011 declarations · 10 core contracts</span></div>
+            <div class="arch-blocks">
+              <a class="arch-block" href="map.html?codebase=solidity&amp;module=KnomosisBridge">KnomosisBridge<span class="arch-hint">deposits · withdrawals</span></a>
+              <a class="arch-block" href="map.html?codebase=solidity&amp;module=KnomosisStateRootSubmission">StateRootSubmission<span class="arch-hint">root commitments</span></a>
+              <a class="arch-block" href="map.html?codebase=solidity&amp;module=KnomosisSequencerStake">SequencerStake<span class="arch-hint">bonds · slashing</span></a>
+              <a class="arch-block" href="map.html?codebase=solidity&amp;module=KnomosisFaultProofGame">FaultProofGame<span class="arch-hint">bisection</span></a>
+              <a class="arch-block" href="map.html?codebase=solidity&amp;module=KnomosisStepVM">StepVM<span class="arch-hint">single-step re-execution</span></a>
+              <a class="arch-block" href="map.html?codebase=solidity&amp;module=KnomosisDisputeVerifier">DisputeVerifier<span class="arch-hint">verdict + rewards</span></a>
+              <a class="arch-block" href="map.html?codebase=solidity&amp;module=KnomosisIdentityRegistry">IdentityRegistry<span class="arch-hint">keys · authority</span></a>
+              <a class="arch-block" href="map.html?codebase=solidity&amp;module=KnomosisMigration">Migration<span class="arch-hint">upgrade-safe freeze</span></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout">
+          <h3>How the layers stay in sync</h3>
+          <p>A law is written once in <code>Lex</code>. Lean checks it and proves its properties, then the <code>Lex</code> code generator emits the matching action types, transition logic, and CBOR codecs into the Rust and Solidity sources. From the proven model the build also exports golden fixtures — step traces, bisection games, withdrawal roots — that the Rust and Solidity test suites replay verbatim.</p>
+          <p>The result is a closed loop: if any stack computes a different byte than the specification, a cross-check fails. The contracts can’t silently diverge from the proofs, and the runtime can’t silently diverge from the contracts.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="disputes" class="section">
+      <div class="container">
+        <h2 class="section-title">How a dispute settles</h2>
+        <p class="section-lead">Knomosis is optimistic: state roots are accepted unless challenged. What is unusual is that every step of the challenge has a corresponding theorem in the Lean model.</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>The sequencer commits</h3>
+              <p>A sequencer posts a new state root through <code>KnomosisStateRootSubmission</code>, backed by a stake held in <code>KnomosisSequencerStake</code>. Optimistically, that root is taken as canonical.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>A watcher challenges</h3>
+              <p>Any party that computes a different root can open a game in <code>KnomosisFaultProofGame</code>. The Rust <code>knomosis-faultproof-observer</code> does this autonomously, following the honest strategy that the spec models in <code>FaultProof.Strategy</code>.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h3>Bisection narrows the disagreement</h3>
+              <p>The two sides repeatedly bisect the disputed execution interval. Lean proves this process converges and terminates in at most the configured maximum depth, so it cannot stall or run forever.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h3>One step is re-executed on-chain</h3>
+              <p>The game lands on a single instruction. <code>KnomosisStepVM</code> re-executes it against Merkle cell proofs of exactly the state it reads and writes. Because the Lean and on-chain StepVMs are proven coherent, this re-execution is the ground truth.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">5</div>
+            <div class="step-content">
+              <h3>Settlement, deterministically</h3>
+              <p><code>KnomosisDisputeVerifier</code> applies the verdict. The dishonest party’s bond is slashed and the honest challenger is rewarded under a <code>DisputeRewardPolicy</code>. Crucially, <code>applyVerdict_deterministic</code> and <code>applyVerdict_rejected_no_change</code> prove the outcome is reproducible and that a rejected challenge changes nothing else.</p>
+            </div>
+          </div>
+        </div>
+        <div class="callout">
+          <h3>Why this is safe</h3>
+          <p><strong>Determinism</strong> means every honest node computes the same step, so there is always a single correct answer to dispute toward. <strong>Injective encoding</strong> means two different states can never share a commitment, so a fraudulent root can’t hide behind a hash collision. <strong>Bounded termination</strong> means an honest challenger always wins within a fixed number of rounds. And <strong>StepVM coherence</strong> means the contract’s verdict is exactly the specification’s verdict.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="maps" class="section section-alt">
+      <div class="container">
+        <h2 class="section-title">Read the codebase as a map</h2>
+        <p class="section-lead">Three codemaps are bundled with the site, one per language scope. Open any of them in the adaptive navigator to follow dependencies and call graphs derived directly from the source.</p>
         <div class="grid grid-3">
           <a class="feature-card" href="map.html?codebase=lean">
             <h3>Lean</h3>
-            <p>Formal definitions, theorems, and proof structure across the <code>**/*.lean</code> sources.</p>
-            <p class="card-note">266 modules · 4,119 declarations</p>
+            <p>The specification and its proofs: the <code>LegalKernel</code>, the 15 laws, the fault-proof model, and the <code>Lex</code> DSL across the <code>**/*.lean</code> sources.</p>
+            <p class="card-note">266 modules · 4,119 declarations · 899 theorems</p>
           </a>
           <a class="feature-card" href="map.html?codebase=rust">
             <h3>Rust</h3>
-            <p>The runtime and benchmarking crates: functions, structs, traits, and modules across <code>**/*.rs</code>.</p>
-            <p class="card-note">115 modules · 3,397 declarations</p>
+            <p>The runtime and benchmarking crates: the host, the L1 ingest pipeline, the fault-proof observer, the indexer, and the cross-checked primitives across <code>**/*.rs</code>.</p>
+            <p class="card-note">115 modules · 3,397 declarations · 11 crates</p>
           </a>
           <a class="feature-card" href="map.html?codebase=solidity">
             <h3>Solidity</h3>
-            <p>On-chain contracts, interfaces, and libraries across the <code>**/*.sol</code> sources.</p>
-            <p class="card-note">52 modules · 1,011 declarations</p>
+            <p>The on-chain settlement layer: the bridge, sequencer staking, the fault-proof game, the StepVM, and the SMT/CBOR libraries across <code>**/*.sol</code>.</p>
+            <p class="card-note">52 modules · 1,011 declarations · 10 contracts</p>
           </a>
         </div>
         <div class="callout">
           <h3>How the viewer works</h3>
-          <p>Choose a codebase from the toolbar, then search or click to select a module. The selected module sits in the center lane; the modules it depends on appear on the left and the modules that depend on it appear on the right. The interior menu lists every declaration in the module, grouped by kind. Click a declaration to switch into its call graph, and use the breadcrumb to return.</p>
+          <p>Choose a codebase from the toolbar, then search or click to select a module. The selected module sits in the center lane; the modules it depends on appear on the left and the modules that depend on it appear on the right. The interior menu lists every declaration in the module, grouped by kind. Click a declaration to switch into its own call graph, and use the breadcrumb to return.</p>
           <p>Counts above reflect the bundled snapshot; the viewer always shows live statistics for the selected codebase.</p>
         </div>
       </div>
