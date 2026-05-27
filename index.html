@@ -8,10 +8,30 @@
   <meta name="description" content="Knomosis is a law-governed optimistic rollup: one Lean specification, proven with 899 theorems, lowered into a Solidity settlement layer and a Rust runtime that are cross-checked to behave identically.">
   <meta name="theme-color" content="#262d29" id="theme-color-meta">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Knomosis — A Formally Verified Layer 2">
+  <meta property="og:description" content="A law-governed optimistic rollup defined in Lean 4, lowered to Solidity and Rust, and continuously cross-checked for byte-identical behavior.">
+  <meta property="og:url" content="https://knomosis.org/">
+  <meta property="og:site_name" content="Knomosis">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Knomosis — A Formally Verified Layer 2">
+  <meta name="twitter:description" content="One Lean specification, 899 machine-checked theorems, and three cross-checked stacks.">
+  <link rel="canonical" href="https://knomosis.org/">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
   <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
   <link rel="stylesheet" href="assets/css/style.css">
   <script src="assets/js/theme-init.js"></script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Knomosis",
+            "description": "Formally verified law-governed optimistic rollup with a Lean specification lowered to Rust and Solidity.",
+      "url": "https://knomosis.org/",
+      "sameAs": ["https://github.com/hatter6822/Knomosis"]
+    }
+  </script>
+
 </head>
 <body>
   <div class="site-backdrop" aria-hidden="true"></div>
@@ -25,6 +45,7 @@
         <li><a href="#about">About</a></li>
         <li><a href="#novel">Features</a></li>
         <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#disputes">Disputes</a></li>
         <li><a href="#maps">Code Maps</a></li>
         <li><a href="map.html">Map Viewer</a></li>
         <li><a href="https://github.com/hatter6822/Knomosis" target="_blank" rel="noopener noreferrer" class="nav-cta">GitHub</a></li>
@@ -42,11 +63,11 @@
   </nav>
 
   <main id="main-content">
-    <section id="hero" class="hero">
+    <section id="hero" class="hero" aria-labelledby="hero-title">
       <div class="hero-bg" aria-hidden="true"></div>
       <div class="container hero-content">
         <p class="hero-label">Formally Verified · Law-Governed · Optimistic Rollup</p>
-        <h1>Knomosis</h1>
+        <h1 id="hero-title">Knomosis</h1>
         <p class="hero-subtitle">A Layer 2 whose rules are written as machine-checked law. A single Lean&nbsp;4 specification — proven with 899 theorems — is lowered into an on-chain Solidity settlement layer and an off-chain Rust runtime, and the three stacks are continuously cross-checked to behave byte-for-byte identically.</p>
         <p class="hero-tagline">One specification. Three stacks. <code>Proven</code> to agree.</p>
         <div class="hero-stats" role="list" aria-label="Project at a glance">
@@ -74,9 +95,9 @@
       </div>
     </section>
 
-    <section id="about" class="section section-alt">
+    <section id="about" class="section section-alt" aria-labelledby="about-title">
       <div class="container">
-        <h2 class="section-title">A Layer 2 governed by provable law</h2>
+        <h2 id="about-title" class="section-title">A Layer 2 governed by provable law</h2>
         <p class="section-lead">Most rollups specify their state machine in prose and a reference client, then hope the contracts match. Knomosis turns that around: the protocol <em>is</em> a formal specification. Its entire state-transition function is a small set of named “laws” — written in Lean&nbsp;4, machine-checked, and mechanically lowered into the code that actually runs on and off chain.</p>
         <div class="grid grid-3">
           <article class="card">
@@ -95,9 +116,9 @@
       </div>
     </section>
 
-    <section id="novel" class="section">
+    <section id="novel" class="section" aria-labelledby="novel-title">
       <div class="container">
-        <h2 class="section-title">What makes Knomosis novel</h2>
+        <h2 id="novel-title" class="section-title">What makes Knomosis novel</h2>
         <p class="section-lead">The interesting parts are not any single component but how proof, runtime, and contracts are forced to stay in lockstep. Six ideas carry most of the weight.</p>
         <div class="features-grid">
           <article class="feature-card">
@@ -134,9 +155,9 @@
       </div>
     </section>
 
-    <section id="architecture" class="section section-alt">
+    <section id="architecture" class="section section-alt" aria-labelledby="architecture-title">
       <div class="container">
-        <h2 class="section-title">One specification, three stacks</h2>
+        <h2 id="architecture-title" class="section-title">One specification, three stacks</h2>
         <p class="section-lead">The same protocol is expressed three times, on purpose. Lean proves it, Rust runs it, Solidity settles it — and codegen plus golden vectors keep the lower layers honest. Every block below opens that component in the codebase map.</p>
 
         <div class="arch-diagram">
@@ -189,9 +210,9 @@
       </div>
     </section>
 
-    <section id="disputes" class="section">
+    <section id="disputes" class="section" aria-labelledby="disputes-title">
       <div class="container">
-        <h2 class="section-title">How a dispute settles</h2>
+        <h2 id="disputes-title" class="section-title">How a dispute settles</h2>
         <p class="section-lead">Knomosis is optimistic: state roots are accepted unless challenged. What is unusual is that every step of the challenge has a corresponding theorem in the Lean model.</p>
         <div class="steps">
           <div class="step">
@@ -237,9 +258,9 @@
       </div>
     </section>
 
-    <section id="maps" class="section section-alt">
+    <section id="maps" class="section section-alt" aria-labelledby="maps-title">
       <div class="container">
-        <h2 class="section-title">Read the codebase as a map</h2>
+        <h2 id="maps-title" class="section-title">Read the codebase as a map</h2>
         <p class="section-lead">Three codemaps are bundled with the site, one per language scope. Open any of them in the adaptive navigator to follow dependencies and call graphs derived directly from the source.</p>
         <div class="grid grid-3">
           <a class="feature-card" href="map.html?codebase=lean">
