@@ -713,6 +713,7 @@ html:not([data-theme="light"]) .hero-subtitle {
 .section-title {
   font-size: clamp(1.75rem, 4vw, 2.5rem);
   text-wrap: balance;
+  overflow-wrap: break-word;
   font-weight: 800;
   color: var(--heading);
   letter-spacing: -0.02em;
@@ -974,6 +975,7 @@ a.feature-card:hover h3 {
 }
 .feature-card p {
   overflow-wrap: anywhere;
+  max-width: 65ch;
   font-size: 0.9375rem;
   color: var(--text);
   line-height: 1.7;
@@ -1672,7 +1674,6 @@ a.feature-card:hover h3 {
     padding: 1.5rem;
   }
   .feature-card p {
-  overflow-wrap: anywhere;
     font-size: 0.875rem;
   }
 
