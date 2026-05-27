@@ -376,6 +376,10 @@ em {
   color: var(--text-bright);
   background: var(--accent-glow);
 }
+.nav-links a:focus-visible {
+  color: var(--text-bright);
+  background: var(--accent-glow);
+}
 .nav-links a[aria-current="page"],
 .nav-links a[aria-current="true"] {
   color: var(--accent);
@@ -708,6 +712,7 @@ html:not([data-theme="light"]) .hero-subtitle {
 
 .section-title {
   font-size: clamp(1.75rem, 4vw, 2.5rem);
+  text-wrap: balance;
   font-weight: 800;
   color: var(--heading);
   letter-spacing: -0.02em;
@@ -968,6 +973,7 @@ a.feature-card:hover h3 {
   margin-bottom: 0.5rem;
 }
 .feature-card p {
+  overflow-wrap: anywhere;
   font-size: 0.9375rem;
   color: var(--text);
   line-height: 1.7;
@@ -1666,6 +1672,7 @@ a.feature-card:hover h3 {
     padding: 1.5rem;
   }
   .feature-card p {
+  overflow-wrap: anywhere;
     font-size: 0.875rem;
   }
 
