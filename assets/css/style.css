@@ -1697,6 +1697,10 @@ a.feature-card:hover h3 {
   .arch-blocks .arch-block {
     max-width: none;
   }
+  .arch-core .arch-blocks .arch-block,
+  .arch-model .arch-blocks .arch-block {
+    max-width: none;
+  }
   .arch-block {
     min-width: 0;
     min-height: 3.25rem;
