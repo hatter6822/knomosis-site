@@ -180,7 +180,7 @@ body {
 }
 
 body.nav-open {
-  overflow: hidden;
+  overflow: visible;
 }
 
 a {
@@ -248,7 +248,7 @@ em {
   height: 1px;
   padding: 0;
   margin: -1px;
-  overflow: hidden;
+  overflow: visible;
   clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
@@ -529,6 +529,11 @@ a.arch-block:hover {
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(91, 160, 245, 0.15);
   color: var(--accent);
+}
+a.arch-block:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 30%, transparent);
 }
 
 /* Light theme overrides for backgrounds */
@@ -862,7 +867,7 @@ html:not([data-theme="light"]) .hero-subtitle {
   text-align: center;
   flex: 1 1 auto;
   min-width: 6rem;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .arch-blocks .arch-block {
@@ -1692,11 +1697,23 @@ a.feature-card:hover h3 {
   .arch-blocks .arch-block {
     max-width: none;
   }
+  .arch-core .arch-blocks .arch-block,
+  .arch-model .arch-blocks .arch-block {
+    max-width: none;
+  }
   .arch-block {
     min-width: 0;
-    padding: 0.4375rem 0.625rem;
+    min-height: 3.25rem;
+    padding: 0.5rem 0.625rem;
     font-size: 0.75rem;
-    word-break: break-word;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    text-wrap: pretty;
+  }
+
+  /* Keep Lean blocks legible: names + hints are dense on small screens. */
+  .arch-model .arch-blocks {
+    grid-template-columns: 1fr;
   }
   .arch-stat {
     font-size: 0.5rem;
