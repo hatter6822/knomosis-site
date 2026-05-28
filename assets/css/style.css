@@ -496,7 +496,11 @@ html:not([data-theme="light"]) .hero-logo {
   filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.75));
 }
 .hero-logo .logo-img {
-  height: clamp(13rem, 58vw, 39rem);
+  width: 14rem;
+  height: 14rem;
+  width: clamp(7rem, 20vw, 14rem);
+  height: clamp(7rem, 20vw, 14rem);
+  object-fit: contain;
 }
 
 .footer-logo .logo-img {
