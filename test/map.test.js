@@ -187,6 +187,16 @@ for (const name of CODEBASES) {
 }
 
 /* ── state-dependent helpers (require applyGraph) ──────────────── */
+
+
+test("defaultModuleForCodebase selects the configured central module", () => {
+  for (const name of CODEBASES) {
+    const built = map.buildGraph(loadCodemap(name));
+    map.applyGraph(built);
+    assert.equal(map.defaultModuleForCodebase(name), map.CENTRAL_MODULES[name]);
+  }
+});
+
 test("applyGraph + moduleDegree / sortedModuleList", () => {
   const built = map.buildGraph(loadCodemap("rust"));
   map.applyGraph(built);

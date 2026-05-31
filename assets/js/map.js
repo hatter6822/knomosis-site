@@ -37,6 +37,11 @@
     solidity: { path: "data/codemaps/solidity.json", label: "Solidity" }
   });
   var DEFAULT_CODEBASE = "lean";
+  var CENTRAL_MODULES = dict({
+    lean: "LegalKernel.Kernel",
+    rust: "runtime::knomosis-host::src::kernel",
+    solidity: "KnomosisBridge"
+  });
   var DEFAULT_REPO_URL = "https://github.com/hatter6822/Knomosis";
   var DEFAULT_REF = "main";
   var NEIGHBOR_LIMIT = 10;
@@ -401,6 +406,13 @@
 
   function sortedModuleList() {
     return state.moduleNames.slice().sort(sortByScoreThenName);
+  }
+
+  function defaultModuleForCodebase(codebase) {
+    var preferred = CENTRAL_MODULES[codebase];
+    if (preferred && state.moduleMap[preferred]) return preferred;
+    var list = sortedModuleList();
+    return list.length ? list[0] : null;
   }
 
   function declarationCalls(declName) {
@@ -816,7 +828,7 @@
   var LABEL_WRAP_CACHE = new Map();
   function wrapLabelLines(text, width, minChars) {
     if (!text) return [];
-    var cacheKey = text + " " + width + " " + minChars;
+    var cacheKey = text + "\u0000" + width + "\u0000" + minChars;
     if (LABEL_WRAP_CACHE.has(cacheKey)) return LABEL_WRAP_CACHE.get(cacheKey).slice();
 
     var charWidth = prefersCompactViewport() ? 7.0 : 6.4;
@@ -1754,8 +1766,7 @@
       state.interiorMenuModule = "";
       state.interiorMenuQuery = "";
 
-      var list = sortedModuleList();
-      var landing = list.length ? list[0] : null;
+      var landing = defaultModuleForCodebase(state.codebase);
       if (requested && requested.decl) {
         var declRef = null;
         /* Preferred form: a valid `module` param that owns the bare `decl`
@@ -1920,6 +1931,8 @@
       KIND_GROUPS: KIND_GROUPS,
       KIND_ALL_VALUE: KIND_ALL_VALUE,
       DEFAULT_REPO_URL: DEFAULT_REPO_URL,
+      defaultModuleForCodebase: defaultModuleForCodebase,
+      CENTRAL_MODULES: CENTRAL_MODULES,
       state: state
     };
   }
