@@ -197,6 +197,36 @@ test("defaultModuleForCodebase selects the configured central module", () => {
   }
 });
 
+test("resetMapView returns each codebase to its default module", () => {
+  for (const name of CODEBASES) {
+    const built = map.buildGraph(loadCodemap(name));
+    map.applyGraph(built);
+    map.state.codebase = name;
+
+    const defaultModule = map.defaultModuleForCodebase(name);
+    const alternateModule = built.moduleNames.find((moduleName) => moduleName !== defaultModule);
+    assert.ok(alternateModule, `${name} fixture has a non-default module to select first`);
+
+    map.state.selectedModule = alternateModule;
+    map.state.flowContext = "declaration";
+    map.state.selectedDeclaration = Object.keys(built.declarationIndex)[0] || "placeholder";
+    map.state.selectedDeclarationModule = alternateModule;
+    map.state.declarationLanesExpanded = true;
+    map.state.flowShowAll = true;
+    map.state.flowScrollTarget = alternateModule;
+
+    const landing = map.resetMapView();
+    assert.equal(landing, map.CENTRAL_MODULES[name]);
+    assert.equal(map.state.selectedModule, map.CENTRAL_MODULES[name]);
+    assert.equal(map.state.flowContext, "module");
+    assert.equal(map.state.selectedDeclaration, "");
+    assert.equal(map.state.selectedDeclarationModule, "");
+    assert.equal(map.state.declarationLanesExpanded, false);
+    assert.equal(map.state.flowShowAll, false);
+    assert.equal(map.state.flowScrollTarget, map.CENTRAL_MODULES[name]);
+  }
+});
+
 test("applyGraph + moduleDegree / sortedModuleList", () => {
   const built = map.buildGraph(loadCodemap("rust"));
   map.applyGraph(built);

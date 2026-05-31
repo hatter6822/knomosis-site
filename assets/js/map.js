@@ -628,6 +628,20 @@
     scheduleRender();
   }
 
+  function resetMapView() {
+    var landing = defaultModuleForCodebase(state.codebase);
+    state.selectedModule = landing;
+    state.flowContext = "module";
+    state.selectedDeclaration = "";
+    state.selectedDeclarationModule = "";
+    state.declarationLanesExpanded = false;
+    state.flowShowAll = false;
+    state.flowScrollTarget = landing || "";
+    state.interiorMenuModule = "";
+    state.interiorMenuQuery = "";
+    return landing;
+  }
+
   function setExpandedFlowMode() { state.flowShowAll = true; scheduleRender(); }
   function setCompactFlowMode() { state.flowShowAll = false; scheduleRender(); }
   function expandDeclarationLanes() { state.declarationLanesExpanded = true; scheduleRender(); }
@@ -1815,12 +1829,11 @@
     }
     if (DOM.reset) {
       DOM.reset.addEventListener("click", function () {
-        if (state.flowContext === "declaration") returnToModuleContext();
-        state.flowShowAll = false;
-        state.flowScrollTarget = state.selectedModule || "";
-        if (DOM.search) DOM.search.value = state.selectedModule || "";
+        var landing = resetMapView();
+        if (DOM.search) DOM.search.value = landing || "";
         closeSearchOptions();
         setSearchFeedback("");
+        syncUrlState();
         scheduleRender();
       });
     }
@@ -1932,6 +1945,7 @@
       KIND_ALL_VALUE: KIND_ALL_VALUE,
       DEFAULT_REPO_URL: DEFAULT_REPO_URL,
       defaultModuleForCodebase: defaultModuleForCodebase,
+      resetMapView: resetMapView,
       CENTRAL_MODULES: CENTRAL_MODULES,
       state: state
     };
