@@ -22,8 +22,23 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
+  # Validate before publishing: the codemap-invariant and WCAG theme tests must
+  # pass, so a broken codemap or palette regression can never reach production.
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run tests
+        run: npm test
+
+  # Deploy only after the test gate is green.
   deploy:
+    needs: test
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
