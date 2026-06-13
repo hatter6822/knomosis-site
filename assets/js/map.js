@@ -252,9 +252,32 @@
     var kindCounts = Object.create(null);
     var declarationCount = 0;
 
-    /* Pass 1 — index every declaration and bucket by kind per module. */
+    /* Module names must be unique so two distinct source files never collapse
+       into one node.  The Solidity codemap derives a module name from the file's
+       basename stem, so two files that share a basename in different directories
+       (e.g. test/AmmMath.t.sol and test/CrossCheck/AmmMath.t.sol both → "AmmMath.t")
+       collide.  Where a base name is claimed by more than one module we
+       disambiguate every colliding entry with its repository path — keeping each
+       file a distinct, correctly-linked node — while names that are already
+       unique are left untouched so existing deep links stay stable. */
+    var nameFrequency = Object.create(null);
     modules.forEach(function (item) {
-      var name = item.module || item.path || "unknown";
+      var base = item.module || item.path || "unknown";
+      nameFrequency[base] = (nameFrequency[base] || 0) + 1;
+    });
+    var usedNames = Object.create(null);
+    var resolvedNames = modules.map(function (item) {
+      var base = item.module || item.path || "unknown";
+      var name = (nameFrequency[base] > 1 && item.path) ? base + " (" + item.path + ")" : base;
+      /* Final guard against a pathological identical name AND path. */
+      while (usedNames[name]) name += " ·";
+      usedNames[name] = true;
+      return name;
+    });
+
+    /* Pass 1 — index every declaration and bucket by kind per module. */
+    modules.forEach(function (item, moduleIndex) {
+      var name = resolvedNames[moduleIndex];
       var declarations = Array.isArray(item.declarations) ? item.declarations : [];
       var byKind = Object.create(null);
       var declNames = Object.create(null);
@@ -316,8 +339,8 @@
       }
     }
 
-    modules.forEach(function (item) {
-      var sourceName = item.module || item.path || "unknown";
+    modules.forEach(function (item, moduleIndex) {
+      var sourceName = resolvedNames[moduleIndex];
       var declarations = Array.isArray(item.declarations) ? item.declarations : [];
       declarations.forEach(function (decl) {
         if (!decl || typeof decl.name !== "string" || !decl.name) return;

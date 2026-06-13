@@ -324,6 +324,44 @@ test("buildGraph still resolves a non-local call cross-module", () => {
   assert.deepEqual(g.importsTo["B"], ["C"]);
 });
 
+/* ── Duplicate module-name disambiguation (Solidity stem collisions) ── */
+test("buildGraph disambiguates duplicate module names by path", () => {
+  // The Solidity codemap names a module after its file's basename stem, so two
+  // files sharing a basename in different directories both reduce to "AmmMath.t".
+  // They must stay two distinct nodes, never collapse into one (which would drop
+  // a file and corrupt the edge counter).
+  const raw = { modules: [
+    { module: "AmmMath.t", path: "solidity/test/AmmMath.t.sol", declarations: [
+      { kind: "function", name: "testA", line: 1, called: ["shared"] },
+      { kind: "function", name: "shared", line: 2, called: [] }
+    ] },
+    { module: "AmmMath.t", path: "solidity/test/CrossCheck/AmmMath.t.sol", declarations: [
+      { kind: "function", name: "testB", line: 1, called: [] }
+    ] }
+  ] };
+  const g = map.buildGraph(raw);
+  assert.equal(g.moduleNames.length, 2, "both colliding modules are preserved");
+  assert.equal(new Set(g.moduleNames).size, 2, "module names are unique after disambiguation");
+  // Each disambiguated name maps back to its own distinct source path.
+  const paths = g.moduleNames.map((n) => g.moduleMap[n]).sort();
+  assert.deepEqual(paths, ["solidity/test/AmmMath.t.sol", "solidity/test/CrossCheck/AmmMath.t.sol"]);
+  // testA -> shared is intra-module (both in the first file); it must NOT create
+  // a cross-module edge to the second AmmMath.t, and the counter stays consistent.
+  let edges = 0;
+  for (const a of g.moduleNames) edges += (g.importsFrom[a] || []).length;
+  assert.equal(edges, g.stats.crossModuleLinks, "edge counter stays consistent under collisions");
+  assert.equal(edges, 0, "a self-contained local call adds no cross-module edge");
+});
+
+/* The real bundled codemaps must never contain a duplicate module name (the
+   loader's disambiguation guarantees uniqueness; this pins it end-to-end). */
+for (const name of CODEBASES) {
+  test(`buildGraph(${name}) — module names are unique`, () => {
+    const g = map.buildGraph(loadCodemap(name));
+    assert.equal(new Set(g.moduleNames).size, g.moduleNames.length, "no duplicate module names");
+  });
+}
+
 /* ── Unambiguous deep links for dotted names (PR #2 review) ── */
 test("dotted declaration names resolve via module + bare decl", () => {
   const raw = { repository: { url: "https://github.com/x/y" }, modules: [
