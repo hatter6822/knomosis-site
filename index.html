@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark light">
   <title>Knomosis — A Formally Verified Layer 2</title>
-  <meta name="description" content="Knomosis is a law-governed optimistic rollup: one Lean specification, proven with 899 theorems, lowered into a Solidity settlement layer and a Rust runtime that are cross-checked to behave identically.">
+  <meta name="description" content="Knomosis is a law-governed optimistic rollup: one Lean specification, proven with 1,235 theorems, lowered into a Solidity settlement layer and a Rust runtime that are cross-checked to behave identically.">
   <meta name="theme-color" content="#262d29" id="theme-color-meta">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta property="og:type" content="website">
@@ -13,9 +13,12 @@
   <meta property="og:description" content="A law-governed optimistic rollup defined in Lean 4, lowered to Solidity and Rust, and continuously cross-checked for byte-identical behavior.">
   <meta property="og:url" content="https://knomosis.org/">
   <meta property="og:site_name" content="Knomosis">
+  <meta property="og:image" content="https://knomosis.org/assets/images/dark_logo.png">
+  <meta property="og:image:alt" content="Knomosis logo">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Knomosis — A Formally Verified Layer 2">
-  <meta name="twitter:description" content="One Lean specification, 899 machine-checked theorems, and three cross-checked stacks.">
+  <meta name="twitter:description" content="One Lean specification, 1,235 machine-checked theorems, and three cross-checked stacks.">
+  <meta name="twitter:image" content="https://knomosis.org/assets/images/dark_logo.png">
   <link rel="canonical" href="https://knomosis.org/">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
   <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
@@ -72,15 +75,15 @@
           <img class="logo-img logo-img-light" src="assets/images/light_logo.png" width="1024" height="1024" alt="" decoding="async" fetchpriority="high">
         </div>
         <h1 id="hero-title">Knomosis</h1>
-        <p class="hero-subtitle">A Layer 2 whose rules are written as machine-checked law. A single Lean&nbsp;4 specification — proven with 899 theorems — is lowered into an on-chain Solidity settlement layer and an off-chain Rust runtime, and the three stacks are continuously cross-checked to behave byte-for-byte identically.</p>
+        <p class="hero-subtitle">A Layer 2 whose rules are written as machine-checked law. A single Lean&nbsp;4 specification — proven with 1,235 theorems — is lowered into an on-chain Solidity settlement layer and an off-chain Rust runtime, and the three stacks are continuously cross-checked to behave byte-for-byte identically.</p>
         <p class="hero-tagline">One specification. Three stacks. <code>Proven</code> to agree.</p>
         <div class="hero-stats" role="list" aria-label="Project at a glance">
           <div class="stat" role="listitem">
-            <span class="stat-value">899</span>
+            <span class="stat-value">1,235</span>
             <span class="stat-label">Theorems proven</span>
           </div>
           <div class="stat" role="listitem">
-            <span class="stat-value">15</span>
+            <span class="stat-value">25</span>
             <span class="stat-label">Protocol laws</span>
           </div>
           <div class="stat" role="listitem">
@@ -88,7 +91,7 @@
             <span class="stat-label">Cross-checked stacks</span>
           </div>
           <div class="stat" role="listitem">
-            <span class="stat-value">433</span>
+            <span class="stat-value">523</span>
             <span class="stat-label">Code modules</span>
           </div>
         </div>
@@ -106,7 +109,7 @@
         <div class="grid grid-3">
           <article class="card">
             <h3>Laws, not just code</h3>
-            <p>Every change to L2 state is one of 15 named laws — <code>Mint</code>, <code>Transfer</code>, <code>Deposit</code>, <code>Withdraw</code>, <code>Dispute</code>, <code>Freeze</code>, <code>Reward</code>, and more. Each law is admissible only under an explicit signature-and-authority policy, and is proven to touch exactly the state it declares — nothing else.</p>
+            <p>Every change to L2 state is one of 25 named laws — <code>Mint</code>, <code>Transfer</code>, <code>Deposit</code>, <code>Withdraw</code>, <code>Dispute</code>, <code>Freeze</code>, <code>Reward</code>, an <code>AmmSwap</code>, and more. Each law is admissible only under an explicit signature-and-authority policy, and is proven to touch exactly the state it declares — nothing else.</p>
           </article>
           <article class="card">
             <h3>One spec, three stacks</h3>
@@ -132,7 +135,7 @@
           </article>
           <article class="feature-card">
             <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 13.5 15 9.5"/></svg></div>
-            <h3>899 machine-checked theorems</h3>
+            <h3>1,235 machine-checked theorems</h3>
             <p>The spec proves properties, not just types: determinism of the transition function, injectivity of every encoder (so state commitments can’t collide), invariant preservation, and resource conservation. Names like <code>applyVerdict_deterministic</code>, <code>apply_admissible_preserves_bridge</code>, and <code>burn_conserves_other_resource</code> are theorems, not tests.</p>
           </article>
           <article class="feature-card">
@@ -148,7 +151,7 @@
           <article class="feature-card">
             <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
             <h3>Three-way cross-stack conformance</h3>
-            <p>Keccak-256, secp256k1 ECDSA, CBOR, the SMT, the StepVM, and the entire dispute game exist in Lean, Rust, and Solidity at once. Dedicated <code>knomosis-hash-keccak256</code> and <code>knomosis-verify-secp256k1</code> crates plus 12 Solidity <code>CrossCheck</code> suites replay shared golden vectors and assert byte-for-byte agreement.</p>
+            <p>Keccak-256, secp256k1 ECDSA, CBOR, the SMT, the StepVM, and the entire dispute game exist in Lean, Rust, and Solidity at once. Dedicated <code>knomosis-hash-keccak256</code> and <code>knomosis-verify-secp256k1</code> crates plus 16 Solidity <code>CrossCheck</code> suites replay shared golden vectors and assert byte-for-byte agreement.</p>
           </article>
           <article class="feature-card">
             <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1"/><path d="M16 3h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2 2 2 0 0 0-2 2v5a2 2 0 0 1-2 2h-1"/></svg></div>
@@ -166,10 +169,10 @@
 
         <div class="arch-diagram">
           <div class="arch-layer arch-model">
-            <div class="arch-layer-label">Specification &amp; Proof · Lean&nbsp;4 <span class="arch-layer-stat">266 modules · 4,119 declarations · 899 theorems</span></div>
+            <div class="arch-layer-label">Specification &amp; Proof · Lean&nbsp;4 <span class="arch-layer-stat">303 modules · 5,063 declarations · 1,235 theorems</span></div>
             <div class="arch-blocks">
               <a class="arch-block" href="map.html?codebase=lean&amp;module=LegalKernel">LegalKernel<span class="arch-hint">the state machine</span></a>
-              <a class="arch-block" href="map.html?codebase=lean&amp;module=LegalKernel.Laws.Transfer">Laws<span class="arch-hint">15 transition rules</span></a>
+              <a class="arch-block" href="map.html?codebase=lean&amp;module=LegalKernel.Laws.Transfer">Laws<span class="arch-hint">25 transition rules</span></a>
               <a class="arch-block" href="map.html?codebase=lean&amp;module=LegalKernel.FaultProof.Game">FaultProof<span class="arch-hint">the dispute game</span></a>
               <a class="arch-block" href="map.html?codebase=lean">Authority &amp; Policy<span class="arch-hint">who may act</span></a>
               <a class="arch-block" href="map.html?codebase=lean">Encoding<span class="arch-hint">CBOR · SMT roots</span></a>
@@ -178,7 +181,7 @@
           </div>
 
           <div class="arch-layer arch-rust">
-            <div class="arch-layer-label">Off-chain Runtime · Rust <span class="arch-layer-stat">11 crates · 115 modules · 3,397 declarations</span></div>
+            <div class="arch-layer-label">Off-chain Runtime · Rust <span class="arch-layer-stat">11 crates · 137 modules · 4,617 declarations</span></div>
             <div class="arch-blocks">
               <a class="arch-block" href="map.html?codebase=rust&amp;module=runtime::knomosis-host::src::kernel">knomosis-host<span class="arch-hint">sequencer · admission · verdict</span></a>
               <a class="arch-block" href="map.html?codebase=rust&amp;module=runtime::knomosis-l1-ingest::src::watcher">knomosis-l1-ingest<span class="arch-hint">L1 events · reorgs</span></a>
@@ -192,7 +195,7 @@
           </div>
 
           <div class="arch-layer arch-security">
-            <div class="arch-layer-label">On-chain Settlement · Solidity <span class="arch-layer-stat">52 modules · 1,011 declarations · 10 core contracts</span></div>
+            <div class="arch-layer-label">On-chain Settlement · Solidity <span class="arch-layer-stat">83 modules · 1,856 declarations · 11 core contracts</span></div>
             <div class="arch-blocks">
               <a class="arch-block" href="map.html?codebase=solidity&amp;module=KnomosisBridge">KnomosisBridge<span class="arch-hint">deposits · withdrawals</span></a>
               <a class="arch-block" href="map.html?codebase=solidity&amp;module=KnomosisStateRootSubmission">StateRootSubmission<span class="arch-hint">root commitments</span></a>
@@ -269,18 +272,18 @@
         <div class="grid grid-3">
           <a class="feature-card" href="map.html?codebase=lean">
             <h3>Lean</h3>
-            <p>The specification and its proofs: the <code>LegalKernel</code>, the 15 laws, the fault-proof model, and the <code>Lex</code> DSL across the <code>**/*.lean</code> sources.</p>
-            <p class="card-note">266 modules · 4,119 declarations · 899 theorems</p>
+            <p>The specification and its proofs: the <code>LegalKernel</code>, the 25 laws, the fault-proof model, and the <code>Lex</code> DSL across the <code>**/*.lean</code> sources.</p>
+            <p class="card-note">303 modules · 5,063 declarations · 1,235 theorems</p>
           </a>
           <a class="feature-card" href="map.html?codebase=rust">
             <h3>Rust</h3>
             <p>The runtime and benchmarking crates: the host, the L1 ingest pipeline, the fault-proof observer, the indexer, and the cross-checked primitives across <code>**/*.rs</code>.</p>
-            <p class="card-note">115 modules · 3,397 declarations · 11 crates</p>
+            <p class="card-note">137 modules · 4,617 declarations · 11 crates</p>
           </a>
           <a class="feature-card" href="map.html?codebase=solidity">
             <h3>Solidity</h3>
             <p>The on-chain settlement layer: the bridge, sequencer staking, the fault-proof game, the StepVM, and the SMT/CBOR libraries across <code>**/*.sol</code>.</p>
-            <p class="card-note">52 modules · 1,011 declarations · 10 contracts</p>
+            <p class="card-note">83 modules · 1,856 declarations · 11 contracts</p>
           </a>
         </div>
         <div class="callout">

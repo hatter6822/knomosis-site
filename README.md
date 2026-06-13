@@ -52,7 +52,7 @@ cheap.
 
 Deep links are supported, e.g. `map.html?codebase=rust` or
 `map.html?codebase=lean&module=LegalKernel` or
-`map.html?codebase=solidity&decl=KnomosisDisputeVerifier.run`.
+`map.html?codebase=solidity&decl=KnomosisDisputeVerifier.fileDispute`.
 
 ## Codemap data
 
