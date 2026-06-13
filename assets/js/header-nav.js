@@ -741,6 +741,5 @@
 
   }
 
-  window.sele4nSetupHeaderNav = setupHeaderNav;
   setupHeaderNav();
 })();

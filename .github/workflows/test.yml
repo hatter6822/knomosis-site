@@ -1,0 +1,32 @@
+# Runs the dependency-free unit tests (codemap invariants + WCAG theme guard)
+# on every push and pull request, so a broken codemap or a palette regression
+# is caught before it can be deployed by static.yml.
+name: Test
+
+# Push-to-main is validated by the gating `test` job in static.yml (which blocks
+# deployment), so this workflow covers pull requests and manual runs only.
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "test-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      # No dependencies to install — the suite uses only the Node built-in
+      # test runner (`node --test`), matching the project's zero-dependency policy.
+      - name: Run tests
+        run: npm test
