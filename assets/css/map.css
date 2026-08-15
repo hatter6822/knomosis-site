@@ -113,46 +113,6 @@
   padding-left: calc(0.5rem - 2px);
 }
 
-.detail-preset {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  min-width: 0;
-  display: grid;
-  gap: 0.24rem;
-}
-.detail-preset legend {
-  color: var(--text-muted);
-  font-size: 0.78rem;
-  line-height: 1.1;
-  padding: 0;
-}
-.detail-preset-options {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 0.28rem;
-  align-items: center;
-}
-.detail-pill {
-  border: none;
-  border-radius: 999px;
-  min-height: 2.2rem;
-  padding: 0.3rem 0.7rem;
-  background: var(--bg);
-  box-shadow: var(--neu-raised-sm);
-  color: var(--text);
-  font-size: 0.76rem;
-  cursor: pointer;
-  transition: box-shadow 0.15s, color 0.15s;
-}
-.detail-pill:hover,
-.detail-pill:focus-visible {
-  color: var(--accent);
-}
-.detail-pill.is-active {
-  color: var(--accent);
-  box-shadow: var(--neu-inset-sm);
-}
 .toolbar-actions {
   display: flex;
   justify-content: flex-end;
@@ -160,18 +120,6 @@
   padding-top: calc(0.78rem * 1.2 + 0.24rem);
 }
 .toolbar-actions .btn { min-height: 2.4rem; padding: 0.24rem 0.7rem; font-size: 0.74rem; white-space: nowrap; }
-.visually-hidden,
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: 0;
-}
 
 .navigator-layout {
   display: grid;
@@ -219,16 +167,6 @@
   border-radius: 50%;
   flex-shrink: 0;
 }
-.legend-swatch-bar {
-  width: 0.32rem;
-  height: 0.86rem;
-  border-radius: 2px;
-}
-.legend-assurance {
-  border-style: dashed;
-  border-color: color-mix(in oklab, var(--border) 70%, transparent);
-}
-.legend-assurance[title] { cursor: help; }
 .legend-separator {
   width: 1px;
   align-self: stretch;
@@ -435,22 +373,9 @@
 .flow-node:not(.static):focus-visible rect { stroke: var(--accent); stroke-width: 2; filter: url(#flow-node-shadow) brightness(1.06); }
 .flow-node:not(.static):focus-visible { outline: 2px solid color-mix(in oklab, var(--accent) 55%, transparent); outline-offset: 3px; border-radius: 12px; }
 .flow-node.active rect { stroke-width: 2; }
-.flow-node.assurance-linked .assurance-bar { fill: var(--assurance-linked); }
-.flow-node.assurance-partial .assurance-bar { fill: var(--assurance-partial); }
-.flow-node.assurance-local .assurance-bar { fill: var(--assurance-local); }
-.flow-node.assurance-none .assurance-bar { fill: var(--assurance-none); }
-/* Use a subtle box-shadow-equivalent via opacity rather than the expensive
-   SVG drop-shadow filter which triggers per-node compositing on large graphs. */
-.flow-node .assurance-bar { transition: fill 0.15s ease-out; opacity: 0.92; }
-.flow-node .assurance-icon { font-family: var(--font-mono); font-size: 11px; transition: fill 0.15s ease-out; opacity: 0.88; }
-.flow-node.assurance-linked .assurance-icon { fill: var(--assurance-linked); }
-.flow-node.assurance-partial .assurance-icon { fill: var(--assurance-partial); }
-.flow-node.assurance-local .assurance-icon { fill: var(--assurance-local); }
-.flow-node.assurance-none .assurance-icon { fill: var(--assurance-none); }
 
 @media (max-width: 1320px) {
   .map-toolbar { grid-template-columns: minmax(0, 1fr); align-items: stretch; }
-  .detail-preset { width: 100%; }
   .toolbar-actions { justify-content: flex-start; padding-top: 0; }
   .toolbar-actions .btn { min-width: 8rem; }
 }
@@ -485,18 +410,15 @@
     align-items: flex-start;
     gap: 0.24rem;
   }
-  .detail-preset-options { width: 100%; }
-  .detail-pill { flex: 1 1 0; text-align: center; }
 }
 
+/* Without backdrop-filter the sticky toolbar needs an opaque backing so the
+   flowchart never shows through it; the theme background is the right colour
+   in both modes. */
 @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
   @media (max-width: 900px) {
     .map-toolbar {
-      background: rgba(13, 19, 32, 0.96);
-    }
-
-    [data-theme="light"] .map-toolbar {
-      background: rgba(240, 242, 247, 0.97);
+      background: var(--bg);
     }
   }
 }
@@ -554,12 +476,10 @@
     border-radius: 0.75rem;
   }
   .control-group label,
-  .detail-preset legend,
   .search-feedback,
   .interior-menu-column h4 {
     font-size: 0.8rem;
   }
-  .detail-pill,
   .control-group input,
   .control-group select,
   .toolbar-actions .btn,
@@ -623,7 +543,6 @@
      flow-meta tspan elements which act as visual content. */
   .flow-node text { font-size: 12px; }
   .flow-node .flow-meta { font-size: 10.5px; }
-  .flow-node .assurance-icon { font-size: 12px; }
   /* Ensure cross-module dashed outlines remain visible at mobile zoom levels */
   .flow-node.cross-module rect { stroke-dasharray: 7 4; stroke-width: 1.6; }
 }
@@ -743,13 +662,6 @@
      can be relatively larger without overflow. */
   .flow-node text { font-size: 12.5px; }
   .flow-node .flow-meta { font-size: 11px; }
-  .detail-preset-options {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
-  .detail-pill {
-    width: 100%;
-  }
   .flowchart-wrap {
     max-height: calc(100svh - var(--nav-height) - 7.75rem);
   }
@@ -814,8 +726,6 @@
 @media (prefers-reduced-motion: reduce) {
   .stat-card { animation: none; }
   .flow-node rect { transition: none; }
-  .flow-node .assurance-bar,
-  .flow-node .assurance-icon { transition: none; }
   .flowchart-wrap { scroll-behavior: auto; }
 }
 @keyframes stat-card-in {

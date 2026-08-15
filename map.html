@@ -8,6 +8,18 @@
   <meta name="description" content="Adaptive Knomosis codemap navigator: explore Lean, Rust, and Solidity module dependencies and declaration call graphs as an interactive flowchart.">
   <meta name="theme-color" content="#262d29" id="theme-color-meta">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Knomosis Codebase Maps">
+  <meta property="og:description" content="Explore the Knomosis codebase as an interactive flowchart: Lean, Rust, and Solidity module dependencies and declaration call graphs.">
+  <meta property="og:url" content="https://knomosis.org/map.html">
+  <meta property="og:site_name" content="Knomosis">
+  <meta property="og:image" content="https://knomosis.org/assets/images/dark_logo.png">
+  <meta property="og:image:alt" content="Knomosis logo">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Knomosis Codebase Maps">
+  <meta name="twitter:description" content="Interactive dependency and call-graph maps for the Knomosis Lean, Rust, and Solidity codebases.">
+  <meta name="twitter:image" content="https://knomosis.org/assets/images/dark_logo.png">
+  <link rel="canonical" href="https://knomosis.org/map.html">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
   <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
   <link rel="stylesheet" href="assets/css/style.css">
@@ -32,7 +44,7 @@
         <li><a href="https://github.com/hatter6822/Knomosis" target="_blank" rel="noopener noreferrer" class="nav-cta">GitHub</a></li>
       </ul>
       <div class="nav-controls">
-        <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links" aria-haspopup="true">
+        <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
           <span></span><span></span><span></span>
         </button>
         <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark theme">
@@ -82,7 +94,7 @@
                 <button id="reset-view" class="btn btn-secondary" type="button">Reset</button>
               </div>
             </form>
-            <div id="flow-node-interior-menu" class="flow-node-interior-menu" aria-live="polite"></div>
+            <div id="flow-node-interior-menu" class="flow-node-interior-menu"></div>
             <div class="flowchart-shell">
               <p class="flowchart-mobile-hint" aria-hidden="true">Tip: on mobile, drag to pan, pinch to zoom, and tap a node to inspect details.</p>
               <details class="keyboard-shortcuts-hint">
@@ -93,7 +105,7 @@
                   <div><dt><kbd>Esc</kbd></dt><dd>Close search</dd></div>
                 </dl>
               </details>
-              <div id="flowchart-wrap" class="flowchart-wrap" aria-live="polite" role="region" aria-label="Dependency and call flow chart" tabindex="0"></div>
+              <div id="flowchart-wrap" class="flowchart-wrap" role="region" aria-label="Dependency and call flow chart" tabindex="0"></div>
             </div>
           </article>
         </div>

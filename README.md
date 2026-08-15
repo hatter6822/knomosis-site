@@ -62,6 +62,14 @@ The viewer reads JSON codemaps bundled from the Knomosis repository:
 - `data/codemaps/rust.json`
 - `data/codemaps/solidity.json`
 
+They are snapshots of `codemaps/<lang>/codemap.json` from the
+[Knomosis](https://github.com/hatter6822/Knomosis) repository (regenerated
+there by `scripts/regenerate_codemaps.py` on every PR). To re-sync, copy the
+three files over and re-run `npm test` — the suite validates the bundled maps'
+internal consistency. When the counts change, update the statistics quoted in
+`index.html` (hero stats, architecture layer labels, and map card notes) to
+match.
+
 Each codemap contains `modules[]`, where every module has `declarations[]`
 (`kind`, `name`, `line`, `called[]`). Cross-module links and the declaration
 call graph are derived at load time by resolving each declaration's `called`
