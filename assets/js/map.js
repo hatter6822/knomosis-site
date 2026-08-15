@@ -1788,10 +1788,17 @@
     closeSearchOptions();
     setSearchFeedback("");
 
-    return fetch(source.path, { cache: "no-store" }).then(function (response) {
+    /* Default HTTP caching: the codemaps are large (~1–2 MB each) and only
+       change when the site is redeployed, so ETag/max-age revalidation beats
+       re-downloading them on every visit. */
+    var token = ++loadCodemap.token;
+    return fetch(source.path).then(function (response) {
       if (!response.ok) throw new Error("HTTP " + response.status);
       return response.json();
     }).then(function (raw) {
+      /* A newer loadCodemap call supersedes this one (rapid codebase
+         switching); drop the stale result instead of clobbering its state. */
+      if (token !== loadCodemap.token) return;
       applyGraph(buildGraph(raw));
 
       /* Reset selection for the new codebase, honouring any requested deep link. */
@@ -1834,12 +1841,15 @@
       syncUrlState();
       scheduleRender();
     }).catch(function (error) {
+      if (token !== loadCodemap.token) return;
       setStatus("Failed loading " + source.label + " codemap: " + (error && error.message ? error.message : "unknown error"), true);
       if (DOM.flowWrap) DOM.flowWrap.textContent = "";
       if (DOM.stats) DOM.stats.innerHTML = "";
       renderFlowNodeInteriorMenu("");
     });
   }
+  /* Monotonic id of the most recent load; stale in-flight loads check it. */
+  loadCodemap.token = 0;
 
   /* ── Setup ─────────────────────────────────────────────────── */
   function isTypingTarget(target) {
